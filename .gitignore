@@ -1,4 +1,7 @@
 .DS_Store
+.stignore
+.stversions
+
 .acme.sh
 .config/clash
 .config/sops
