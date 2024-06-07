@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "zh-CN name should be provided as the only one param."
+    exit 1
+fi
+
+folder_name=$(basename "`pwd`")
+
+splitted_name=(`echo ${folder_name//./ }`)
+
+if [ "x"${splitted_name[1]} = "xLocalized" ]; then
+    en_name=${splitted_name[0]}
+    zh_name=$1
+    mkdir -p .localized
+    echo "\"$en_name\" = \"$en_name\";" > .localized/en-US.strings
+    echo "\"$en_name\" = \"$zh_name\";" > .localized/zh-CN.strings
+else
+    echo "This folder is not Localized. Do nothing!"
+    exit 0
+fi

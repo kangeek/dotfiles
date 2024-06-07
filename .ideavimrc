@@ -1,0 +1,142 @@
+""""""""""""""""""""""""""""""""" Vim Settings """""""""""""""""""""""""""""""""
+let mapleader=","
+set number
+set scrolloff=5
+noremap <C-e> 3<C-e>
+noremap <C-y> 3<C-y>
+" noremap <S-h> <C-w>h
+" noremap <S-l> <C-w>l
+
+
+"""""""""""""""""""""""""""""" Jetbrains Actions """""""""""""""""""""""""""""""
+" [[ Navigation ]]
+" Go to the next warning
+noremap e :action GotoNextError<CR>
+" Quick fix
+noremap E :action ShowIntentionActions<CR>
+" Go to declaration
+noremap <C-i> :action Forward<CR>
+noremap <C-o> :action Back<CR>
+" Method up/down
+noremap m :action MethodDown<CR>
+noremap M :action MethodUp<CR>
+
+" [[ Goto / Quick Show Actions ]]
+" Goto file
+noremap gf :action GotoFile<CR>
+" Goto type
+noremap go :action GotoClass<CR>
+" Recent files
+noremap gj :action RecentFiles<CR>
+" Quick document
+noremap gh :action QuickJavaDoc<CR>
+" Recent Locations
+noremap gl :action RecentLocations<CR>
+" Goto action
+noremap ga :action GotoAction<CR>
+" Quick implementation
+noremap gi :action QuickImplementations<CR>
+" Quick file structure
+noremap gs :action FileStructurePopup<CR>
+" Quick type hierarchy
+noremap gt :action TypeHierarchy<CR>
+" Find usages
+noremap gu :action FindUsages<CR>
+" Hide all windows / Restore
+noremap gw :action HideAllWindows<CR>
+" Goto next project
+noremap gn :action NextProjectWindow<CR>
+" Rust: Show Recursive Macro Expansion
+noremap gx :action Rust.ShowRecursiveMacroExpansionAction<CR>
+
+" [[ Editing ]]
+" Escape
+inoremap jk <Esc>
+" Complete current statement
+inoremap jl <Esc><S-4>:action EditorCompleteStatement<CR>:action ReformatCode<CR>a
+" Smart Type Completion
+inoremap jj <Space><Esc>:action ParameterInfo<CR>:action SmartTypeCompletion<CR>i<Del>
+" Format code
+inoremap jf <Esc>:action ReformatCode<CR>a
+" Rename and refactor
+noremap <Leader>rn :action RenameElement<CR>
+noremap <Leader>rf :action Refactorings.QuickListPopupAction<CR>
+" Surround with / Unwrap
+noremap <Leader>sw :action SurroundWith<CR>
+noremap <Leader>su :action Unwrap<CR>
+
+" Reload all from disk
+noremap <Leader>rl :action ReloadAllFromDisk<CR>
+
+" [[ View ]]
+" Toggle view
+noremap <Leader>vn :action ViewNavigationBar<CR>
+noremap <Leader>vs :action ViewStatusBar<CR>
+noremap <Leader>vt :action ViewNavigationBar<CR> :action ViewStatusBar<CR>
+noremap <Leader>vf :action ToggleFullScreen<CR>
+noremap <Leader>vz :action ToggleZenMode<CR>
+noremap <Leader>vp :action TogglePresentationMode<CR>
+
+" [[ Run and Debug ]]
+" Run
+noremap <Leader>rr :action Run<CR>
+noremap <Leader>rc :action ChooseRunConfiguration<CR>
+" Debug
+noremap <Leader>dd :action Debug<CR>
+noremap <Leader>dc :action ChooseDebugConfiguration<CR>
+
+" [[ Tool Windows ]]
+" Activate Terminal tool window
+noremap <Leader>t :action ActivateTerminalToolWindow<CR>
+" Project window
+noremap <Leader>f :NERDTree<CR>
+" Activate git tool window
+noremap <Leader>wg :action ActivateVersionControlToolWindow<CR>
+" Activate problems tool window
+noremap <Leader>we :action ActivateProblemsViewToolWindow<CR>
+" Activate structure tool window
+noremap <Leader>ws :action ActivateStructureToolWindow<CR>
+" Activate hierarchy tool window
+noremap <Leader>wh :action ActivateHierarchyToolWindow<CR>
+" Activate build tool window
+noremap <Leader>wb :action ActivateBuildToolWindow<CR>
+" Activate run tool window
+noremap <Leader>wr :action ActivateRunToolWindow<CR>
+" Activate todo tool window
+noremap <Leader>wo :action ActivateTODOToolWindow<CR>
+" Activate event Log tool window
+noremap <Leader>wl :action ActivateEventLogToolWindow<CR>
+" Activate last window
+noremap <Leader>ww :action JumpToLastWindow<CR>
+
+" [[ Open ]]
+" Open recent projects
+noremap <Leader>p :action RecentProjectListGroup<CR>
+noremap <Leader>cp :action CloseProject<CR>
+
+"""""""""""""""""""""""""""""" Ideavim plugins """"""""""""""""""""""""""""""""
+" ideavim-extension
+set keep-english-in-normal
+" Easymotion
+" set easymotion
+
+" nmap f <Plug>(easymotion-s)
+" vmap f <Plug>(easymotion-s)
+" NerdTree
+set NERDTree
+" Sneak
+set sneak
+" multiple-cursors
+set multiple-cursors
+" commentary
+set commentary
+
+
+""""""""""""""""""""""""""""""""" sethandler """"""""""""""""""""""""""""""""""
+" n - Normal mode
+" i - Insert mode
+" x - Visual mode
+" v - Visual and Select modes
+" a - all modes
+sethandler n-v:vim i:ide
+sethandler <C-G> n-v:ide i:ide

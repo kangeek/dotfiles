@@ -1,0 +1,37 @@
+# https://alacritty.org/config-alacritty.html
+
+live_config_reload = true
+
+import = [
+  "~/.config/alacritty/themes/themes/catppuccin_mocha.toml"
+]
+
+[env]
+MY_ENV = "This alacritty"
+
+[window]
+decorations = "None"
+# opacity = 0.90
+dynamic_padding = true
+decorations_theme_variant = "Dark"
+
+[scrolling]
+history = 10000
+
+[font]
+normal = { family = "UbuntuSansMono Nerd Font Mono", style = "Regular" }
+bold = { style = "Medium" }
+italic = { style = "Italic" }
+bold_italic = { style = "Medium Italic" }
+size = 18.0
+
+[selection]
+save_to_clipboard = true
+
+[keyboard]
+bindings = [
+  { key = "T", mods = "Command", action = "CreateNewTab"},
+  { key = "[", mods = "Command", action = "SelectPreviousTab"},
+  { key = "]", mods = "Command", action = "SelectNextTab"},
+]
+

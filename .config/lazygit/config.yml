@@ -1,0 +1,44 @@
+gui:
+
+  # Sometimes the main window is split in two (e.g. when the selected file has both staged and unstaged changes). This setting controls how the two sections are split.
+  # Options are:
+  # - 'horizontal': split the window horizontally
+  # - 'vertical': split the window vertically
+  # - 'flexible': (default) split the window horizontally if the window is wide enough, otherwise split vertically
+  mainPanelSplitMode: horizontal
+
+  # How the window is split when in half screen mode (i.e. after hitting '+' once).
+  # Possible values:
+  # - 'left': split the window horizontally (side panel on the left, main view on the right)
+  # - 'top': split the window vertically (side panel on top, main view below)
+  enlargedSideViewLocation: top
+
+  # Format used when displaying time e.g. commit time.
+  # Uses Go's time format syntax: https://pkg.go.dev/time#Time.Format
+  timeFormat: 2006-01-02
+
+  # Format used when displaying time if the time is less than 24 hours ago.
+  # Uses Go's time format syntax: https://pkg.go.dev/time#Time.Format
+  shortTimeFormat: 15:04
+
+  # Whether to stack UI components on top of each other.
+  # One of 'auto' (default) | 'always' | 'never'
+  portraitMode: always
+
+  # If true, show the bottom line that contains keybinding info and useful buttons. If false, this line will be hidden except to display a loader for an in-progress action.
+  showBottomLine: false
+
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
+
+keybinding:
+  universal:
+    quit-alt1: <c-x>
+    prevBlock-alt: K
+    nextBlock-alt: J
+    scrollLeft: ""
+    scrollRight: ""
+    nextTab: L
+    prevTab: H

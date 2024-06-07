@@ -1,0 +1,21 @@
+[tools]
+# global tool versions go here
+# you can set these with `rtx use -g`
+age = "1.1.1"
+gcloud = "latest"
+helm = "3.13.2"
+helmfile = "latest"
+jq = "1.7"
+jb = "0.5.1"
+jsonnet = "latest"
+kubectl = "1.28"
+node = 'lts'
+mc = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+sops = "3.7.3"
+terraform = "latest"
+terraform-validator = "3.1.3"
+vault = "latest"
+yq = "latest"
+

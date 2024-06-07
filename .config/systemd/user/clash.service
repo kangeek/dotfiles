@@ -1,0 +1,12 @@
+[Unit]
+Description=Clash Daemon
+
+[Service]
+Type=simple
+ExecStart=/home/kang/.local/bin/clash -d /home/kang/.config/clash/
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=default.target
+

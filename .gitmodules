@@ -1,0 +1,18 @@
+[submodule ".config/alacritty/themes"]
+	path = .config/alacritty/themes
+	url = https://github.com/alacritty/alacritty-theme
+[submodule ".config/ranger/colorschemes/dracula"]
+	path = .config/ranger/colorschemes/dracula
+	url = https://github.com/dracula/ranger.git
+[submodule ".config/ranger/plugins/zoxide"]
+	path = .config/ranger/plugins/zoxide
+	url = https://github.com/jchook/ranger-zoxide.git
+[submodule ".oh-my-zsh"]
+	path = .oh-my-zsh
+	url = https://github.com/ohmyzsh/ohmyzsh.git
+[submodule ".tmux"]
+	path = .tmux
+	url = https://github.com/gpakosz/.tmux.git
+[submodule ".config/tmux/plugins/tpm"]
+	path = .config/tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm

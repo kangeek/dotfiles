@@ -1,0 +1,37 @@
+#!/bin/bash
+
+syncdir="/Users/kang/Library/Mobile Documents/com~apple~CloudDocs/Mackup.Localized/Workspace.Localized"
+
+if [ $(cd ../..; basename `pwd`) != "Workspace.Localized" ];then
+  echo "This command only apply for ~/Workspace.Localized/xxx/yyy. Do nothing!"
+  exit 0
+fi
+
+not_sync_node_modules > /dev/null     # 如果是nodejs项目, 则不同步node_modules目录
+
+cpath=$(basename `pwd`)
+ppath=$(basename `cd ..; pwd`)
+sync_path="$syncdir/$ppath/$cpath"
+proj_path="/Users/kang/Workspace.Localized/$ppath/$cpath"
+
+if [ -h "$proj_path" ]; then      # 如果已经是链接, 取消同步
+  link_path="$(readlink $proj_path)"
+  if [ "$link_path" = "$sync_path" ]; then
+    echo -n "This project is already under sync, cancel syncing? [y/n] "
+    read ifCancel
+    if [ $ifCancel = "y" ] || [ $ifCancel = "Y" ]; then
+      rm -f "$proj_path"
+      mv "$link_path" "$proj_path"
+    fi
+  else
+    echo "This project is within a symbolic link which is not as expected, please check."
+    exit 0
+  fi
+else                      # 如果不是链接, 开始同步
+  cd ..
+  mkdir -p "$syncdir/$ppath"
+  mv "$proj_path" "$syncdir/$ppath"
+  ln -s "$sync_path" "$proj_path"
+  cd "$proj_path"
+  echo "This project is now under sync at \"$sync_path\"."
+fi

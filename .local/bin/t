@@ -1,0 +1,23 @@
+#!/bin/zsh
+
+# DONOT enter tmux if:
+#   - already in a tmux session
+[ $TMUX ] && exit 0
+#   - not in a ssh session
+[[ -z $SSH_CLIENT ]] && exit 0
+#   - in jetbrains or vscode console
+if ([ "x$TERM_PROGRAM" = "xvscode" ] \
+  || [ "x$TERMINAL_EMULATOR" = "xJetBrains-JediTerm" ]);then
+  exit 0
+fi
+
+which tmux &> /dev/null || exit 0
+
+session=${1:-"TMUX"}
+
+tmux has -t $session &> /dev/null
+if [ $? -eq 0 ]; then
+    tmux attach -t $session
+else
+    tmux new -s $session
+fi
