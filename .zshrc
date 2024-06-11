@@ -203,6 +203,7 @@ export GO111MODULE=on
 export GOPATH=$HOME/.go
 export GOPROXY=https://goproxy.io,https://goproxy.cn,direct
 export GOPRIVATE=ops.kang.zone,github.com/liukango/private
+export PATH=$GOPATH/bin:$PATH
 # <<< Go env <<<
 #
 # <<< acme & mkcert <<<
