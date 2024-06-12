@@ -128,8 +128,7 @@ elif [ "$(uname)" = "Darwin" ]; then
     ################### Alias ####################
     alias o="open"
     which multipass &> /dev/null && alias mp="multipass"
-    alias vm="virt-manager -c 'qemu+ssh://root@192.168.1.100/system?sshauth=privkey&socket=/run/libvirt/libvirt-sock'"
-    alias vv="virt-viewer -c 'qemu+ssh://root@192.168.1.100/system?sshauth=privkey&socket=/run/libvirt/libvirt-sock'"
+    alias vv="virt-viewer -c 'qemu+ssh://root@lab/system?&socket=/run/libvirt/libvirt-sock'"
     ################### Alias ####################
 
     ################## DevEnv ####################
@@ -213,10 +212,10 @@ export CAROOT=$HOME/.local/share/mkcert
 # >>> acme & mkcert >>>
 #
 # <<< [tool] asdf & mise <<<
-[ -f "$HOME/.asdf/asdf.sh" ] && . "$HOME/.asdf/asdf.sh"
-# export MISE_ENV=$(hostname -s)
+# [ -f "$HOME/.asdf/asdf.sh" ] && . "$HOME/.asdf/asdf.sh"
+export MISE_ENV=$(hostname -s)
 # [ -f "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh)"
-# export PATH="$HOME/.local/share/mise/shims/:$PATH"
+export PATH="$HOME/.local/share/mise/shims:$PATH"
 # >>> [tool] asdf & mise >>>
 #
 # <<< [rust] cargo env <<<
@@ -238,6 +237,7 @@ command -v zoxide &> /dev/null && eval "$(zoxide init zsh)"
 #
 # >>> PATH
 export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/share/nvim/mason/bin:$PATH
 # <<< PATH
 #
 #################################### DevEnv ####################################
