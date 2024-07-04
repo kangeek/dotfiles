@@ -88,7 +88,7 @@ export VI_MODE_SET_CURSOR=true
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(vi-mode copybuffer pyenv direnv
-  git kubectl tmux web-search mise
+  git kubectl tmux web-search
   zsh-autosuggestions zsh-syntax-highlighting zsh-fzf-history-search
   mytsh myfzf
 )
@@ -132,8 +132,8 @@ elif [ "$(uname)" = "Darwin" ]; then
     ################### Alias ####################
 
     ################## DevEnv ####################
-    export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890
-    export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.pre.env,*.stg.env,*.prd.env,*.gitlab.cool
+    # export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890
+    # export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.pre.env,*.stg.env,*.prd.env,*.gitlab.cool
     #
     # >>> homebrew-bottles
     export HOMEBREW_CORE_GIT_REMOTE=https://mirrors.ustc.edu.cn/homebrew-core.git
@@ -198,10 +198,8 @@ export EDITOR='nvim'
 export XDG_CONFIG_HOME="$HOME/.config"
 #
 # >>> Go env >>>
-export GO111MODULE=on
 export GOPATH=$HOME/.go
-export GOPROXY=https://goproxy.io,https://goproxy.cn,direct
-export GOPRIVATE=ops.kang.zone,github.com/liukango/private
+export GOPROXY=https://goproxy.cn,direct
 export PATH=$GOPATH/bin:$PATH
 # <<< Go env <<<
 #
@@ -239,6 +237,10 @@ command -v zoxide &> /dev/null && eval "$(zoxide init zsh)"
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.local/share/nvim/mason/bin:$PATH
 # <<< PATH
+#
+# >>> Disable Ctrl+S in terminal
+stty -ixon
+# <<< Disable Ctrl+S in terminal
 #
 #################################### DevEnv ####################################
 
