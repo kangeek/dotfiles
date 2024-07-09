@@ -1,0 +1,119 @@
+{
+  "title": "3. Simultaneous keypair to charactors",
+  "rules": [
+    {
+      "description": "hg- xh_ js+ dy= dk{ dl} vk[ vl] xk( xl) vy\\ ux| dm` bl~",
+      "manipulators": [
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "h" }, { "key_code": "g" } ] },
+          "to": [ { "key_code": "hyphen" } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "x" }, { "key_code": "h" } ] },
+          "to": [ { "key_code": "hyphen", "modifiers": [ "shift" ] } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "d" }, { "key_code": "y" } ] },
+          "to": [ { "key_code": "equal_sign" } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "j" }, { "key_code": "s" } ] },
+          "to": [ { "key_code": "equal_sign", "modifiers": [ "shift" ] } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "d" }, { "key_code": "k" } ] },
+          "to": [ { "key_code": "open_bracket", "modifiers": [ "shift" ] } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "d" }, { "key_code": "l" } ] },
+          "to": [ { "key_code": "close_bracket", "modifiers": [ "shift" ] } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "v" }, { "key_code": "k" } ] },
+          "to": [ { "key_code": "open_bracket" } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "v" }, { "key_code": "l" } ] },
+          "to": [ { "key_code": "close_bracket" } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "x" }, { "key_code": "k" } ] },
+          "to": [ { "key_code": "9", "modifiers": [ "shift" ] } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "x" }, { "key_code": "l" } ] },
+          "to": [ { "key_code": "0", "modifiers": [ "shift" ] } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "v" }, { "key_code": "y" } ] },
+          "to": [ { "key_code": "backslash" } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "u" }, { "key_code": "x" } ] },
+          "to": [ { "key_code": "backslash", "modifiers": [ "shift" ] } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "d" }, { "key_code": "m" } ] },
+          "to": [ { "key_code": "grave_accent_and_tilde" } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "b" }, { "key_code": "l" } ] },
+          "to": [ { "key_code": "grave_accent_and_tilde", "modifiers": [ "shift" ] } ],
+          "conditions": [ { "type": "device_if", "identifiers": [ { "vendor_id": 1452, "product_id": 834 } ] } ]
+        }
+      ]
+    },
+    {
+      "description": "fj↵ du⌘⌫",
+      "manipulators": [
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "f" }, { "key_code": "j" } ] },
+          "to": [ { "key_code": "return_or_enter" } ]
+        },
+        { 
+          "type": "basic", 
+          "from": { "simultaneous": [ { "key_code": "d" }, { "key_code": "u" } ] },
+          "to": [ { "key_code": "delete_or_backspace", "modifiers": [ "command" ] } ]
+        }
+      ]
+    },
+    {
+      "description": "Disable origin: - _ + = {} [] \\ |",
+      "manipulators": [
+        { "type": "basic", "from": { "key_code": "hyphen", "modifiers": { "optional": [ "shift" ] } } },
+        { "type": "basic", "from": { "key_code": "equal_sign", "modifiers": { "optional": [ "shift" ] } } },
+        { "type": "basic", "from": { "key_code": "open_bracket", "modifiers": { "optional": [ "shift" ] } } },
+        { "type": "basic", "from": { "key_code": "close_bracket", "modifiers": { "optional": [ "shift" ] } } },
+        { "type": "basic", "from": { "key_code": "backslash", "modifiers": { "optional": [ "shift" ] } } }
+      ]
+    }
+  ]
+}

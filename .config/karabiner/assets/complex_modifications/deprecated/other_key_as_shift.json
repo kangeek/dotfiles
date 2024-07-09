@@ -1,0 +1,22 @@
+{
+  "title": "4. J/F as shift key when hold",
+  "rules": [
+    {
+      "description": "J/F as shift key when hold",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "f" },
+          "to": { "key_code": "left_shift" },
+          "to_if_alone": { "key_code": "f" }
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "j" },
+          "to": { "key_code": "right_shift" },
+          "to_if_alone": { "key_code": "j" }
+        }
+      ]
+    }
+  ]
+}

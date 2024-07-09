@@ -1,0 +1,89 @@
+{
+  "title": "2. Use modifiers as keys",
+  "rules": [
+    {
+      "description": "Press left_shift alone produces F13",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "left_shift" },
+          "to": { "key_code": "left_shift" },
+          "to_if_alone": { "key_code": "f13" },
+          "parameters": { "basic.to_if_alone_timeout_milliseconds": 200 }
+        }
+      ]
+    },
+    {
+      "description": "Press right_shift alone produces F14",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "right_shift" },
+          "to": { "key_code": "right_shift" },
+          "to_if_alone": { "key_code": "f14" },
+          "parameters": { "basic.to_if_alone_timeout_milliseconds": 200 }
+        }
+      ]
+    },
+    {
+      "description": "Press left_control alone produces F15",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "left_control" },
+          "to": { "key_code": "left_control" },
+          "to_if_alone": { "key_code": "f15" },
+          "parameters": { "basic.to_if_alone_timeout_milliseconds": 200 }
+        }
+      ]
+    },
+    {
+      "description": "Press left_option alone produces F16",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "left_option" },
+          "to": { "key_code": "left_option" },
+          "to_if_alone": { "key_code": "f16" },
+          "parameters": { "basic.to_if_alone_timeout_milliseconds": 200 }
+        }
+      ]
+    },
+    {
+      "description": "Press left_command alone produces F17",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "left_command" },
+          "to": { "key_code": "left_command" },
+          "to_if_alone": { "key_code": "f17" },
+          "parameters": { "basic.to_if_alone_timeout_milliseconds": 200 }
+        }
+      ]
+    },
+    {
+      "description": "Right_command change to right_control & alone produces F18",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "right_command" },
+          "to": { "key_code": "right_control" },
+          "to_if_alone": { "key_code": "f18" },
+          "parameters": { "basic.to_if_alone_timeout_milliseconds": 200 }
+        }
+      ]
+    },
+    {
+      "description": "Press right_option alone produces F19",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "right_alt" },
+          "to": { "key_code": "right_alt" },
+          "to_if_alone": { "key_code": "f19" },
+          "parameters": { "basic.to_if_alone_timeout_milliseconds": 200 }
+        }
+      ]
+    }
+  ]
+}
