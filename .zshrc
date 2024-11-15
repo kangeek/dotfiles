@@ -117,8 +117,10 @@ if [ "$(uname)" = "Linux" ]; then
     # export https_proxy=http://mac.kang.zone:7890 http_proxy=http://mac.kang.zone:7890 all_proxy=socks5://mac.kang.zone:7890
     # nc -z lab.kang.zone 7890 && export http_proxy=http://lab.kang.zone:7890 && export https_proxy=$http_proxy || \
     #   (nc -z mac.kang.zone 7890 && export http_proxy=http://mac.kang.zone:7890 && export https_proxy=$http_proxy)
-    export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890
-    export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.pre.env,*.stg.env,*.prd.env,*.gitlab.cool
+    if [ "$(hostname)" != "main" ]; then
+        export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890
+        export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.pre.env,*.stg.env,*.prd.env,*.gitlab.cool
+    fi
     # <<< Setting proxy from clashx
     #
     ################### Dev & Env ####################
@@ -152,6 +154,7 @@ elif [ "$(uname)" = "Darwin" ]; then
     #
     # >>> set PATH for language tools
     export PATH="${BREW_HOME}/opt/ruby/bin:$PATH"
+    export PATH="$(ruby -e 'puts Gem.bindir'):$PATH"
     # <<< set PATH for language tools
     #
     # >>> fzf-git
@@ -171,6 +174,10 @@ elif [ "$(uname)" = "Darwin" ]; then
     #export LDFLAGS="-L${BREW_HOME}/opt/binutils/lib"
     #export CPPFLAGS="-I${BREW_HOME}/opt/binutils/include"
     # <<< set PATH for gnu tools
+    #
+    # >>> vagrant default provider
+    export VAGRANT_DEFAULT_PROVIDER=parallels
+    # <<< vagrant default provided
     #
     ################## DevEnv ####################
 
@@ -212,7 +219,7 @@ export CAROOT=$HOME/.local/share/mkcert
 # <<< [tool] asdf & mise <<<
 # [ -f "$HOME/.asdf/asdf.sh" ] && . "$HOME/.asdf/asdf.sh"
 export MISE_ENV=$(hostname -s)
-# [ -f "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh)"
+[ -f "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh)"
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 # >>> [tool] asdf & mise >>>
 #
@@ -251,24 +258,24 @@ stty -ixon
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
-which zoxide &> /dev/null && alias cd="z"
-which nvim &> /dev/null && alias vim="nvim"
-which eza &> /dev/null && alias ls="eza --git --icons=always --time-style '+%Y-%m-%d %H:%M'"
-which htop &> /dev/null && alias top="htop"
-alias dl="aria2c"
-alias f="ranger"
-alias lt="ls --tree --level 3"
-alias cp="cp --sparse=auto"
-alias dc="docker-compose"
-alias tf="terraform"
 alias ap="ansible-playbook"
+alias ca="gh copilot explain"
+which zoxide &> /dev/null && alias cd="z"
+alias cs="gh copilot suggest"
+alias dc="docker-compose"
+alias dig="dig @8.8.8.8"
+alias dl="aria2c"
+which eza &> /dev/null && alias ls="eza --git --icons=always --time-style '+%Y-%m-%d %H:%M'"
+alias f="ranger"
 alias h="helm"
 alias hf="helmfile"
 alias jn="jsonnet"
 alias kg="kubectl get"
-alias dig="dig @8.8.8.8"
-alias ca="gh copilot explain"
-alias cs="gh copilot suggest"
+alias lg="lazygit"
+alias lt="ls --tree --level 3"
 alias s="sesh list -i | gum filter --limit 1 --placeholder 'Pick a sesson' --prompt=' ' | xargs -I _SESSION_ sesh connect '_SESSION_'"
+alias tf="terraform"
+which htop &> /dev/null && alias top="htop"
+which nvim &> /dev/null && alias vim="nvim"
 #################################### Alias #####################################
 
