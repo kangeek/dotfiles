@@ -218,9 +218,9 @@ export CAROOT=$HOME/.local/share/mkcert
 #
 # <<< [tool] asdf & mise <<<
 # [ -f "$HOME/.asdf/asdf.sh" ] && . "$HOME/.asdf/asdf.sh"
-export MISE_ENV=$(hostname -s)
+# export MISE_ENV=$(hostname -s)
 [ -f "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh)"
-export PATH="$HOME/.local/share/mise/shims:$PATH"
+# export PATH="$HOME/.local/share/mise/shims:$PATH"
 # >>> [tool] asdf & mise >>>
 #
 # <<< [rust] cargo env <<<
