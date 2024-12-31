@@ -118,8 +118,8 @@ if [ "$(uname)" = "Linux" ]; then
     # nc -z lab.kang.zone 7890 && export http_proxy=http://lab.kang.zone:7890 && export https_proxy=$http_proxy || \
     #   (nc -z mac.kang.zone 7890 && export http_proxy=http://mac.kang.zone:7890 && export https_proxy=$http_proxy)
     if [ "$(hostname)" != "main" ]; then
-        export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890
-        export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.pre.env,*.stg.env,*.prd.env,*.gitlab.cool
+        export http_proxy=http://$(hostname):7890 https_proxy=http://$(hostname):7890 all_proxy=socks5://$(hostname):7890
+        export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.gitlab.cool
     fi
     # <<< Setting proxy from clashx
     #
