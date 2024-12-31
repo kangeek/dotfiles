@@ -37,12 +37,12 @@ config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 config.inactive_pane_hsb = { brightness = 0.5 }
 
 config.quick_select_patterns = {
+	"\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}", -- ip address
 	"\\S+@[\\w\\.]+", -- email address
-	"[\\w\\=]{16,}", -- base64 encoded string
-	"\\S{10,}", -- general strings
-	-- "https?://\\S+", -- http url
-	-- "\\~?/?([[:letter:][:number:]._-]+/+)+[[:letter:][:number:]._-]+/?", -- paths
+	"\\w{16,}\\={0,2}", -- base64 encoded string
+	"https?://\\S+", -- http(s) url
 	'@?"(?:[^"\\\\]|\\\\.)*"', -- quoted string
+	"[\\w][\\w-]{8,}", -- general strings
 }
 
 -- timeout_milliseconds defaults to 1000 and can be omitted
