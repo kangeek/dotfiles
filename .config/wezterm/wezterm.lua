@@ -5,24 +5,23 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 local act = wezterm.action
 
--- local theme = "catppuccin-mocha"
-local theme = "catppuccin-macchiato"
+local theme = "Catppuccin Mocha" -- Frappe, Macchiato, Mocha
 -- local font = "MesloLGS NF"
 -- local font = "JetBrainsMono Nerd Font"
 local font = "UbuntuSansMono Nerd Font"
 
 -- This is where you actually apply your config choices
 
-config.term = "screen-256color"
+config.term = "tmux-256color"
 
 config.automatically_reload_config = true
 
 -- Use CMD to bypass application mouse reporting (otherwise url in tmux is unclickable)
 config.bypass_mouse_reporting_modifiers = "CMD"
 
-config.command_palette_font_size = 18.0
-config.command_palette_bg_color = "#24273a"
-config.command_palette_fg_color = "#a5adc8"
+config.command_palette_font_size = 17.0
+config.command_palette_bg_color = "#1e1e2e"
+config.command_palette_fg_color = "#cdd6f4"
 config.command_palette_rows = 32
 
 config.default_workspace = "MAC"
@@ -30,7 +29,7 @@ config.default_workspace = "MAC"
 config.color_scheme = theme
 config.enable_scroll_bar = false
 config.font = wezterm.font(font)
-config.font_size = 18.0
+config.font_size = 17.0
 config.initial_rows = 72
 config.initial_cols = 120
 config.window_decorations = "RESIZE"
