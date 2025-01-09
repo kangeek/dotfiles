@@ -5,7 +5,7 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 local act = wezterm.action
 
-local theme = "Catppuccin Mocha" -- Frappe, Macchiato, Mocha
+local theme = "Catppuccin Macchiato" -- Latte, Frappe, Macchiato, Mocha
 -- local font = "MesloLGS NF"
 -- local font = "JetBrainsMono Nerd Font"
 local font = "UbuntuSansMono Nerd Font"

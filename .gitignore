@@ -3,12 +3,11 @@
 .stversions
 
 .acme.sh
-.config/clash
 .config/sops
-.config/tmux/plugins/*
-!.config/tmux/plugins/tpm
+.config/clash
 .cos.conf
 .git-credentials
 .local/share/mkcert
 .ssh
 .zshenv.sec
+
