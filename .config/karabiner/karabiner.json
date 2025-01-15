@@ -10,6 +10,17 @@
                 },
                 "rules": [
                     {
+                        "description": "[l⇧]F13",
+                        "manipulators": [
+                            {
+                                "from": { "key_code": "left_shift" },
+                                "to": { "key_code": "left_shift" },
+                                "to_if_alone": { "key_code": "f13" },
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "caps_lock to hyper(⌘⌥⌃⇧), ⎋ if pressed alone",
                         "manipulators": [
                             {
@@ -100,17 +111,6 @@
                                     "key_code": "period",
                                     "modifiers": { "mandatory": ["command", "shift", "option", "control"] }
                                 },
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "[l⇧]F13",
-                        "manipulators": [
-                            {
-                                "from": { "key_code": "left_shift" },
-                                "to": { "key_code": "left_shift" },
-                                "to_if_alone": { "key_code": "f13" },
                                 "type": "basic"
                             }
                         ]

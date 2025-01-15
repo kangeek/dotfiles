@@ -10,4 +10,5 @@
 .local/share/mkcert
 .ssh
 .zshenv.sec
+automatic_backups
 
