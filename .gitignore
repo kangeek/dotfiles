@@ -1,7 +1,12 @@
+# MacOS & Syncthing
 .DS_Store
 .stignore
 .stversions
 
+# Deprecated files
+.trash
+
+# Files with secret data
 .acme.sh
 .config/sops
 .config/clash
@@ -12,3 +17,6 @@
 .zshenv.sec
 automatic_backups
 
+# Others
+__pycache__
+*.pyc
