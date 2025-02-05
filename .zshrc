@@ -117,10 +117,12 @@ if [ "$(uname)" = "Linux" ]; then
     # export https_proxy=http://mac.kang.zone:7890 http_proxy=http://mac.kang.zone:7890 all_proxy=socks5://mac.kang.zone:7890
     # nc -z lab.kang.zone 7890 && export http_proxy=http://lab.kang.zone:7890 && export https_proxy=$http_proxy || \
     #   (nc -z mac.kang.zone 7890 && export http_proxy=http://mac.kang.zone:7890 && export https_proxy=$http_proxy)
-    if [ "$(hostname)" != "main" ]; then
+    if [ "$(hostname)" = "main" ]; then
+        export http_proxy=http://mac.kang.zone:7890 https_proxy=http://mac.kang.zone:7890 all_proxy=socks5://mac.kang.zone:7890
+    else
         export http_proxy=http://$(hostname):7890 https_proxy=http://$(hostname):7890 all_proxy=socks5://$(hostname):7890
-        export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.gitlab.cool
     fi
+    export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.gitlab.cool
     # <<< Setting proxy from clashx
     #
     ################### Dev & Env ####################
@@ -145,12 +147,6 @@ elif [ "$(uname)" = "Darwin" ]; then
     export HOMEBREW_CLEANUP_MAX_AGE_DAYS=0
     export BREW_HOME=$(brew --prefix)
     # <<< homebrew-bottles
-    #
-    # >>> python pyenv
-    # export PYENV_ROOT="$HOME/.pyenv"
-    # [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-    # eval "$(pyenv init -)"
-    # <<< python pyenv
     #
     # >>> set PATH for language tools
     export PATH="${BREW_HOME}/opt/ruby/bin:$PATH"
@@ -220,7 +216,6 @@ export CAROOT=$HOME/.local/share/mkcert
 # [ -f "$HOME/.asdf/asdf.sh" ] && . "$HOME/.asdf/asdf.sh"
 # export MISE_ENV=$(hostname -s)
 [ -f "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh)"
-# export PATH="$HOME/.local/share/mise/shims:$PATH"
 # >>> [tool] asdf & mise >>>
 #
 # <<< [rust] cargo env <<<
@@ -275,6 +270,7 @@ alias lg="lazygit"
 alias lt="ls --tree --level 3"
 alias s="sesh list -i | gum filter --limit 1 --placeholder 'Pick a sesson' --prompt=' ' | xargs -I _SESSION_ sesh connect '_SESSION_'"
 alias tf="terraform"
+alias mx="mise x --"
 which htop &> /dev/null && alias top="htop"
 which nvim &> /dev/null && alias vim="nvim"
 #################################### Alias #####################################

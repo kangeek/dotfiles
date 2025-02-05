@@ -3,8 +3,9 @@ source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
 # HomeBrew
 [ -f "/opt/homebrew/bin/brew" ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # mise shims
-# export PATH="$HOME/.local/share/mise/shims:$PATH"
+[ -f "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh --shims)"
 
 # pyenv
 if [[ -d "$HOME/.pyenv" ]]; then

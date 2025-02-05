@@ -15,6 +15,7 @@ local font = "UbuntuSansMono Nerd Font"
 config.term = "tmux-256color"
 
 config.automatically_reload_config = true
+config.window_close_confirmation = "NeverPrompt"
 
 -- Use CMD to bypass application mouse reporting (otherwise url in tmux is unclickable)
 config.bypass_mouse_reporting_modifiers = "CMD"

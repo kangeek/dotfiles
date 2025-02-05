@@ -13,7 +13,7 @@ always_keep_install = false  # deleted on failure by default
 plugin_autoupdate_last_check_duration = '1 day' # set to 0 to disable updates
 
 # config files with these prefixes will be trusted by default
-trusted_config_paths = ['~/.config/mise', '~/.mise.toml', '~/Workspace']
+trusted_config_paths = [ '/Users/kang', '/home/kang' ]
 
 verbose = false    # set to true to see full installation output, see `RTX_VERBOSE`
 asdf_compat = true # set to true to ensure .tool-versions will be compatible with asdf, see `RTX_ASDF_COMPAT`
