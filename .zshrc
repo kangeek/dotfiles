@@ -87,10 +87,10 @@ export VI_MODE_SET_CURSOR=true
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(vi-mode copybuffer pyenv direnv
+plugins=(vi-mode copybuffer mise
   git kubectl tmux web-search
   zsh-autosuggestions zsh-syntax-highlighting zsh-fzf-history-search
-  mytsh myfzf
+  mytsh myfzf pyenv-lazy
 )
 #
 source $ZSH/oh-my-zsh.sh
@@ -214,8 +214,7 @@ export CAROOT=$HOME/.local/share/mkcert
 #
 # <<< [tool] asdf & mise <<<
 # [ -f "$HOME/.asdf/asdf.sh" ] && . "$HOME/.asdf/asdf.sh"
-# export MISE_ENV=$(hostname -s)
-[ -f "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh)"
+# [ -f "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh)"
 # >>> [tool] asdf & mise >>>
 #
 # <<< [rust] cargo env <<<
@@ -255,6 +254,7 @@ stty -ixon
 #
 alias ap="ansible-playbook"
 alias ca="gh copilot explain"
+alias c="windsurf"
 which zoxide &> /dev/null && alias cd="z"
 alias cs="gh copilot suggest"
 alias dc="docker-compose"

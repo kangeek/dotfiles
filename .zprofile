@@ -7,10 +7,7 @@ source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 # mise shims
 [ -f "$HOME/.local/bin/mise" ] && eval "$($HOME/.local/bin/mise activate zsh --shims)"
 
-# pyenv
-if [[ -d "$HOME/.pyenv" ]]; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-  eval "$(pyenv init -)"
-fi
+# sops
+export SOPS_AGE_KEY_FILE=$HOME/.config/sops/age/keys.txt
+export SOPS_AGE_RECIPIENTS=age1v8qcrm9f47g3nwjfxxcm5hc78a3xnpp6szf6cy9vrwfkzrefapfqa0krlv
 
