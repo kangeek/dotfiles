@@ -9,7 +9,8 @@
 # Files with secret data
 .acme.sh
 .config/sops
-.config/clash
+.config/clash/*
+!.config/clash/config.yaml
 .cos.conf
 .git-credentials
 .local/share/mkcert
