@@ -90,7 +90,7 @@ export VI_MODE_SET_CURSOR=true
 plugins=(vi-mode copybuffer mise
   git kubectl tmux web-search
   zsh-autosuggestions zsh-syntax-highlighting zsh-fzf-history-search
-  mytsh myfzf pyenv-lazy
+  mytsh myfzf # pyenv-lazy
 )
 #
 source $ZSH/oh-my-zsh.sh
@@ -114,15 +114,12 @@ if [ "$(uname)" = "Linux" ]; then
     ################### Dev & Env ####################
     #
     # >>> Setting proxy from clashx
-    # export https_proxy=http://mac.kang.zone:7890 http_proxy=http://mac.kang.zone:7890 all_proxy=socks5://mac.kang.zone:7890
-    # nc -z lab.kang.zone 7890 && export http_proxy=http://lab.kang.zone:7890 && export https_proxy=$http_proxy || \
-    #   (nc -z mac.kang.zone 7890 && export http_proxy=http://mac.kang.zone:7890 && export https_proxy=$http_proxy)
-    if [ "$(hostname)" = "main" ]; then
-        export http_proxy=http://mac.kang.zone:7890 https_proxy=http://mac.kang.zone:7890 all_proxy=socks5://mac.kang.zone:7890
-    else
-        export http_proxy=http://$(hostname):7890 https_proxy=http://$(hostname):7890 all_proxy=socks5://$(hostname):7890
-    fi
-    export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.gitlab.cool
+    # if [ "$(hostname)" = "main" ]; then
+    #     export http_proxy=http://mac.kang.zone:7890 https_proxy=http://mac.kang.zone:7890 all_proxy=socks5://mac.kang.zone:7890
+    # else
+    #     export http_proxy=http://$(hostname):7890 https_proxy=http://$(hostname):7890 all_proxy=socks5://$(hostname):7890
+    # fi
+    # export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.gitlab.cool
     # <<< Setting proxy from clashx
     #
     ################### Dev & Env ####################
