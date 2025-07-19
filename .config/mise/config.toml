@@ -1,18 +1,14 @@
 [tools]
 # global tool versions go here
 # you can set these with `mise use -g`
-usage = "latest"
-
 
 # https://mise.jdx.dev/configuration/settings.html
 [settings]
+env_file = ".env" # automatically load .env files in any directory
 plugin_autoupdate_last_check_duration = '1 day' # how long to wait before updating plugins automatically.
 trusted_config_paths = [
   '/Users/kang',
   '/home/kang',
 ] # trusted paths for config files
-jobs = 4 # number of plugins or runtimes to install in parallel. The default is `8`.
-yes = false # set to true to automatically answer yes to all prompts
-verbose = false # set to true to see full installation output
-color = true # set to false to disable color output
-env_file = ".env" # automatically load .env files in any directory
+idiomatic_version_file_enable_tools = ["node"]
+

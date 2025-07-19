@@ -158,11 +158,11 @@ elif [ "$(uname)" = "Darwin" ]; then
     export PATH="${BREW_HOME}/opt/coreutils/libexec/gnubin:${PATH}"
     export PATH="${BREW_HOME}/opt/gawk/libexec/gnubin:${PATH}"
     export PATH="${BREW_HOME}/opt/gnu-sed/libexec/gnubin:${PATH}"
+    export PATH="${BREW_HOME}/opt/gnu-tar/libexec/gnubin:${PATH}"
     export PATH="${BREW_HOME}/opt/findutils/libexec/gnubin:${PATH}"
     export PATH="${BREW_HOME}/opt/grep/libexec/gnubin:${PATH}"
-    export PATH="${BREW_HOME}/opt/rsync/bin:${PATH}"
     export PATH="${BREW_HOME}/opt/openssl@3/bin:${PATH}"
-    export PATH="${BREW_HOME}/opt/diffutils/bin:${PATH}"
+    #export PATH="${BREW_HOME}/opt/diffutils/bin:${PATH}"
     #export PATH="${BREW_HOME}/opt/binutils/bin:${PATH}"
     #export LDFLAGS="-L${BREW_HOME}/opt/binutils/lib"
     #export CPPFLAGS="-I${BREW_HOME}/opt/binutils/include"
@@ -202,6 +202,14 @@ export GOPATH=$HOME/.go
 export GOPROXY=https://goproxy.cn,direct
 export PATH=$GOPATH/bin:$PATH
 # <<< Go env <<<
+#
+# >>> pnpm >>>
+export PNPM_HOME="$HOME/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# <<< pnpm <<<
 #
 # <<< acme & mkcert <<<
 # acme.sh https://zhuanlan.zhihu.com/p/445852299
@@ -250,10 +258,10 @@ stty -ixon
 # For a full list of active aliases, run `alias`.
 #
 alias ap="ansible-playbook"
-alias ca="gh copilot explain"
+alias ce="gh copilot explain"
+alias cs="gh copilot suggest"
 alias c="windsurf"
 which zoxide &> /dev/null && alias cd="z"
-alias cs="gh copilot suggest"
 alias dc="docker-compose"
 alias dig="dig @8.8.8.8"
 alias dl="aria2c"
@@ -263,6 +271,7 @@ alias h="helm"
 alias hf="helmfile"
 alias jn="jsonnet"
 alias kg="kubectl get"
+alias kk="kubectl krew"
 alias lg="lazygit"
 alias lt="ls --tree --level 3"
 alias s="sesh list -i | gum filter --limit 1 --placeholder 'Pick a sesson' --prompt=' ' | xargs -I _SESSION_ sesh connect '_SESSION_'"

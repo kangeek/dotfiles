@@ -27,7 +27,7 @@
 [log]
 	date = format:%Y-%m-%d %H:%M:%S
 [user]
-	name = Liu Kang
+	name = Kang Liu
 	email = liukang.hi@gmail.com
 [pull]
 	ff = only
@@ -35,10 +35,6 @@
 	branch = false
 [checkout]
 	defaultRemote = origin
-[credential "https://staging.jihulab.com"]
-	provider = generic
-[credential "https://jihulab.com"]
-	provider = generic
 [rerere]
 	enabled = true
 
