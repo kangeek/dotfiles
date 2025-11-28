@@ -87,7 +87,7 @@ export VI_MODE_SET_CURSOR=true
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(vi-mode copybuffer mise
+plugins=(copybuffer mise # vi-mode
   git kubectl tmux web-search
   zsh-autosuggestions zsh-syntax-highlighting zsh-fzf-history-search
   mytsh myfzf # pyenv-lazy
@@ -96,7 +96,11 @@ plugins=(vi-mode copybuffer mise
 source $ZSH/oh-my-zsh.sh
 #
 # >>> zsh auto completion
-autoload -Uz compinit && compinit
+autoload -Uz compinit
+for dump in ~/.zcompdump(N.mh+24); do # won't rebuild in 24 hours
+  compinit -C -d ~/.zcompdump
+  break
+done || compinit -C -d ~/.zcompdump
 # <<< zsh auto completion
 #
 ################################## Oh My Zsh ###################################
@@ -122,6 +126,9 @@ if [ "$(uname)" = "Linux" ]; then
     # export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.gitlab.cool
     # <<< Setting proxy from clashx
     #
+    # >>> neovim
+    export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+    # <<< neovim
     ################### Dev & Env ####################
 
 elif [ "$(uname)" = "Darwin" ]; then
@@ -133,8 +140,8 @@ elif [ "$(uname)" = "Darwin" ]; then
     ################### Alias ####################
 
     ################## DevEnv ####################
-    # export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890
-    # export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.pre.env,*.stg.env,*.prd.env,*.gitlab.cool
+    export https_proxy=http://192.168.192.88:7890 http_proxy=http://192.168.192.88:7890 all_proxy=socks5://192.168.192.88:7891
+    export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.paymaya.com,*.goskope.com,*.ap-southeast-1.eks.amazonaws.com,*.voyagerapis.com
     #
     # >>> homebrew-bottles
     export HOMEBREW_CORE_GIT_REMOTE=https://mirrors.ustc.edu.cn/homebrew-core.git
@@ -168,10 +175,19 @@ elif [ "$(uname)" = "Darwin" ]; then
     #export CPPFLAGS="-I${BREW_HOME}/opt/binutils/include"
     # <<< set PATH for gnu tools
     #
+    # >>> other PATHs
+    export PATH="/Users/kang/.codeium/windsurf/bin:$PATH"
+    export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+    # <<< other PATHs
+    #
     # >>> vagrant default provider
-    export VAGRANT_DEFAULT_PROVIDER=parallels
+    export VAGRANT_DEFAULT_PROVIDER=virtualbox
     # <<< vagrant default provided
     #
+    # >>> autocompletion
+    autoload -U +X bashcompinit && bashcompinit
+    complete -o nospace -C /opt/homebrew/bin/mc mc
+    # <<< autocompletion
     ################## DevEnv ####################
 
 fi
@@ -261,9 +277,11 @@ alias ap="ansible-playbook"
 alias ce="gh copilot explain"
 alias cs="gh copilot suggest"
 alias c="windsurf"
+which bat &> /dev/null && alias cat="bat --style=plain"
+which batcat &> /dev/null && alias cat="batcat --style=plain" && alias bat="batcat"
 which zoxide &> /dev/null && alias cd="z"
 alias dc="docker-compose"
-alias dig="dig @8.8.8.8"
+# alias dig="dig @8.8.8.8"
 alias dl="aria2c"
 which eza &> /dev/null && alias ls="eza --git --icons=always --time-style '+%Y-%m-%d %H:%M'"
 alias f="ranger"
@@ -275,9 +293,8 @@ alias kk="kubectl krew"
 alias lg="lazygit"
 alias lt="ls --tree --level 3"
 alias s="sesh list -i | gum filter --limit 1 --placeholder 'Pick a sesson' --prompt=' ' | xargs -I _SESSION_ sesh connect '_SESSION_'"
-alias tf="terraform"
+which tofu &> /dev/null && alias tf="tofu" || (which terraform &> /dev/null && alias tf="terraform")
 alias mx="mise x --"
 which htop &> /dev/null && alias top="htop"
 which nvim &> /dev/null && alias vim="nvim"
 #################################### Alias #####################################
-

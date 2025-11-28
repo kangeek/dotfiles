@@ -11,4 +11,5 @@ trusted_config_paths = [
   '/home/kang',
 ] # trusted paths for config files
 idiomatic_version_file_enable_tools = ["node"]
+experimental = true
 
