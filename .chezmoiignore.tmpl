@@ -27,9 +27,6 @@
 .config/nvim
 
 # ── Skip configs for tools the user chose not to install ─────────────────────
-{{ if not .installGit -}}
-.config/git
-{{ end -}}
 {{ if not .installLazygit -}}
 .config/lazygit
 {{ end -}}

@@ -78,7 +78,6 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin
 The init process will prompt you interactively. Each tool question looks like:
 
 ```
-Install git + git-delta?
 Install lazygit?
 Install zsh + oh-my-zsh + p10k?
 > bool, default true
@@ -89,23 +88,22 @@ Type `true` / `false` (or just press Enter to accept the default) for each promp
 ```
 Age private key (AGE-SECRET-KEY-1..., leave empty to skip — encrypted files will not sync):
 
-Install git + git-delta?                 (default: true)
-Install lazygit?                         (default: false)
-Install zsh + oh-my-zsh + p10k?          (default: true)
-Install mise (tool version manager)?     (default: true)
-Install tmux?                            (default: true)
-Install shell tools (fzf / zoxide / bat / eza / ranger)? (default: true)
-Install htop?                            (default: true)
-Install neovim + ripgrep + fd-find?      (default: false)
-Install uv (Python package manager)?     (default: false)
-Install sops?                            (default: false)
-Install wezterm (macOS only)?            (default: false)
-Install karabiner-elements (macOS only)? (default: false)
+Install zsh + oh-my-zsh + p10k?            (default: true)
+Install shell tools (zoxide, bat, eza...)? (default: true)
+Install htop?                              (default: true)
+Install mise (tool version manager)?       (default: true)
+Install tmux?                              (default: true)
+Install lazygit?                           (default: false)
+Install neovim + ripgrep + fd-find?        (default: false)
+Install uv (Python package manager)?       (default: false)
+Install sops?                              (default: false)
+Install wezterm (macOS only)?              (default: false)
+Install karabiner-elements (macOS only)?   (default: false)
 ```
 
 - **Age key**: paste your `AGE-SECRET-KEY-1...` private key for full encryption support, or leave empty to skip
 - **Tools**: press Enter to accept the default; type `true` or `false` to override
-- Prerequisites (`curl`, `wget`, `gpg`, `age`) are installed automatically before anything else
+- Prerequisites (`curl`, `wget`, `gpg`, `age`, `git`, `git-delta`) are installed automatically before anything else
 - All tools are installed idempotently — already-installed tools are skipped
 
 ---

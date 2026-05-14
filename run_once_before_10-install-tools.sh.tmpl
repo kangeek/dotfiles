@@ -145,29 +145,6 @@ echo "── tmux ──"
 has tmux && skip tmux || { pkg_update; pkg_install tmux tmux tmux; }
 {{ end -}}
 
-# ── git + git-delta ───────────────────────────────────────────────────────────
-{{ if .installGit -}}
-echo "── git + git-delta ──"
-has git && skip git || { pkg_update; pkg_install git git git; }
-if has delta; then
-    skip git-delta
-else
-    if [ "$OS" = "darwin" ]; then
-        brew install git-delta
-    elif [ "$IS_DEBIAN" = "true" ]; then
-        _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
-        _arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
-        curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/git-delta_${_ver#v}_${_arch}.deb" -o /tmp/git-delta.deb
-        sudo dpkg -i /tmp/git-delta.deb && rm /tmp/git-delta.deb
-    elif [ "$IS_RHEL" = "true" ]; then
-        _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
-        _arch=$(uname -m)
-        curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/delta-${_ver#v}-${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
-        sudo install -m 755 /tmp/delta-*/delta /usr/local/bin/delta
-    fi
-fi
-{{ end -}}
-
 # ── lazygit ───────────────────────────────────────────────────────────────────
 {{ if .installLazygit -}}
 echo "── lazygit ──"

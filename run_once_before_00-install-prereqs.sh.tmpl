@@ -1,9 +1,11 @@
 #!/bin/bash
 # Install prerequisite binaries required by subsequent scripts:
-#   - curl  : download binaries from GitHub Releases
-#   - wget  : needed by eza Debian install (apt key fetch)
-#   - gpg   : needed by eza Debian install (dearmor key)
-#   - age   : chezmoi encryption; must exist before run_once_before_01 writes key.txt
+#   - curl      : download binaries from GitHub Releases
+#   - wget      : needed by eza Debian install (apt key fetch)
+#   - gpg       : needed by eza Debian install (dearmor key)
+#   - age       : chezmoi encryption; must exist before run_once_before_01 writes key.txt
+#   - git       : version control (required by many tools)
+#   - git-delta : improved git diff pager
 set -euo pipefail
 
 {{- if eq .chezmoi.os "darwin" }}
@@ -14,10 +16,12 @@ if ! command -v brew &>/dev/null; then
     exit 1
 fi
 
-command -v curl &>/dev/null || brew install curl
-command -v wget &>/dev/null || brew install wget
-command -v gpg  &>/dev/null || brew install gnupg
-command -v age  &>/dev/null || brew install age
+command -v curl  &>/dev/null || brew install curl
+command -v wget  &>/dev/null || brew install wget
+command -v gpg   &>/dev/null || brew install gnupg
+command -v age   &>/dev/null || brew install age
+command -v git   &>/dev/null || brew install git
+command -v delta &>/dev/null || brew install git-delta
 
 {{- else if eq .chezmoi.os "linux" }}
 
@@ -32,11 +36,13 @@ _needs_update=false
 command -v curl &>/dev/null || _needs_update=true
 command -v wget &>/dev/null || _needs_update=true
 command -v gpg  &>/dev/null || _needs_update=true
+command -v git  &>/dev/null || _needs_update=true
 if [ "$_needs_update" = "true" ]; then
     sudo apt-get update -qq
     command -v curl &>/dev/null || sudo apt-get install -y curl
     command -v wget &>/dev/null || sudo apt-get install -y wget
     command -v gpg  &>/dev/null || sudo apt-get install -y gnupg
+    command -v git  &>/dev/null || sudo apt-get install -y git
 fi
 
 if command -v age &>/dev/null; then
@@ -50,10 +56,19 @@ else
     fi
 fi
 
+if ! command -v delta &>/dev/null; then
+    echo "📦 Installing git-delta..."
+    _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
+    _arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+    curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/git-delta_${_ver#v}_${_arch}.deb" -o /tmp/git-delta.deb
+    sudo dpkg -i /tmp/git-delta.deb && rm /tmp/git-delta.deb
+fi
+
 {{-   else if $isRhel }}
 command -v curl &>/dev/null || sudo dnf install -y curl
 command -v wget &>/dev/null || sudo dnf install -y wget
 command -v gpg  &>/dev/null || sudo dnf install -y gnupg2
+command -v git  &>/dev/null || sudo dnf install -y git
 
 if command -v age &>/dev/null; then
     echo "✅ age already installed: $(age --version)"
@@ -66,6 +81,14 @@ else
     else
         _install_age_binary
     fi
+fi
+
+if ! command -v delta &>/dev/null; then
+    echo "📦 Installing git-delta..."
+    _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
+    _arch=$(uname -m)
+    curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/delta-${_ver#v}-${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
+    sudo install -m 755 /tmp/delta-*/delta /usr/local/bin/delta
 fi
 
 {{-   else }}
@@ -94,4 +117,4 @@ _install_age_binary() {
     rm -rf /tmp/age
 }
 
-echo "✅ Prerequisites ready (curl / wget / gpg / age)"
+echo "✅ Prerequisites ready (curl / wget / gpg / age / git / git-delta)"
