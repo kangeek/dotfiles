@@ -43,6 +43,12 @@ pkg_install() {
     fi
 }
 
+# Ensure EPEL is available on RHEL-family systems — many tools (htop,
+# ripgrep, fd-find, bat, fzf, zoxide, ranger, age …) live there.
+if [ "$IS_RHEL" = "true" ]; then
+    sudo dnf install -y epel-release 2>/dev/null || true
+fi
+
 # Update package index once
 _pkg_updated=false
 pkg_update() {
@@ -199,18 +205,14 @@ elif [ "$IS_DEBIAN" = "true" ]; then
     pkg_update && sudo apt-get install -y neovim
 elif [ "$IS_RHEL" = "true" ]; then
     sudo dnf install -y neovim 2>/dev/null || {
-        curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
+        _nvim_arch=$(uname -m)
+        _nvim_tar="nvim-linux-${_nvim_arch}.tar.gz"
+        curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/${_nvim_tar}" \
             | sudo tar -xz -C /opt
-        sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+        sudo ln -sf "/opt/nvim-linux-${_nvim_arch}/bin/nvim" /usr/local/bin/nvim
     }
 fi
-if has rg; then
-    skip ripgrep
-elif [ "$OS" = "darwin" ]; then
-    brew install ripgrep
-else
-    pkg_update; pkg_install ripgrep ripgrep ripgrep
-fi
+has rg && skip ripgrep || { pkg_update; pkg_install ripgrep ripgrep ripgrep; }
 if has fd || has fdfind; then
     skip fd-find
 elif [ "$OS" = "darwin" ]; then
@@ -235,31 +237,7 @@ fi
 # ── ranger ────────────────────────────────────────────────────────────────────
 {{ if .installRanger -}}
 echo "── ranger ──"
-if has ranger; then
-    skip ranger
-elif [ "$OS" = "darwin" ]; then
-    brew install ranger
-elif [ "$IS_DEBIAN" = "true" ]; then
-    pkg_update && sudo apt-get install -y ranger
-else
-    if sudo dnf install -y ranger 2>/dev/null; then
-        :
-    elif sudo dnf install -y epel-release 2>/dev/null \
-        && sudo dnf install -y ranger 2>/dev/null; then
-        :
-    else
-        _uvcmd=""
-        has uv && _uvcmd="uv"
-        [ -z "$_uvcmd" ] && [ -x "$HOME/.local/bin/uv" ] && _uvcmd="$HOME/.local/bin/uv"
-        if [ -n "$_uvcmd" ]; then
-            "$_uvcmd" tool install ranger-fm
-        else
-            echo "⚠️  ranger skipped: not in dnf repos, EPEL install failed," \
-                 "and uv is not installed. Set installUv=true and re-run," \
-                 "or install EPEL manually." >&2
-        fi
-    fi
-fi
+has ranger && skip ranger || { pkg_update; pkg_install ranger ranger ranger; }
 {{ end -}}
 
 # ── sops ──────────────────────────────────────────────────────────────────────

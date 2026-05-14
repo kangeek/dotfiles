@@ -106,7 +106,7 @@ Install karabiner-elements (macOS only)?          (default: false)
 - **Tools**: press Enter to accept the default; type `true` or `false` to override
 - Prerequisites (`curl`, `wget`, `gpg`, `age`, `git`, `git-delta`) are installed automatically before anything else
 - All tools are installed idempotently — already-installed tools are skipped
-- **ranger on RHEL/Rocky**: not in the default repos. The script will install `epel-release` automatically and retry. If EPEL is unavailable and `uv` is installed, `ranger-fm` is installed via `uv tool install`. Otherwise a warning is printed and the script continues without failing.
+- **RHEL/Rocky**: `epel-release` is installed automatically at the start of the run, making packages like `htop`, `ripgrep`, `fd-find`, `bat`, `fzf`, `zoxide`, `ranger`, and `age` available via `dnf`. If EPEL is unavailable, most tools fall back to a direct binary download; ranger prints a warning and is skipped.
 
 ---
 
