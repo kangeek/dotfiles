@@ -44,28 +44,6 @@ pkg_update() {
     fi
 }
 
-# ── curl + wget ───────────────────────────────────────────────────────────────
-{{ if .installCurl -}}
-echo "── curl + wget ──"
-has curl && skip curl || { pkg_update; pkg_install curl curl curl; }
-has wget && skip wget || { pkg_update; pkg_install wget wget wget; }
-{{ end -}}
-
-# ── Network tools (ping / dig / nslookup / netstat) ──────────────────────────
-{{ if .installNetworkTools -}}
-echo "── Network tools ──"
-if [ "$OS" = "darwin" ]; then
-    # macOS ships these by default; bind-tools via brew for dig
-    has dig || brew install bind
-elif [ "$IS_DEBIAN" = "true" ]; then
-    pkg_update
-    # iputils-ping → ping, dnsutils → dig/nslookup, net-tools → netstat
-    sudo apt-get install -y iputils-ping dnsutils net-tools
-elif [ "$IS_RHEL" = "true" ]; then
-    sudo dnf install -y iputils bind-utils net-tools
-fi
-{{ end -}}
-
 # ── git + git-delta ───────────────────────────────────────────────────────────
 {{ if .installGit -}}
 echo "── git + git-delta ──"
@@ -87,6 +65,21 @@ else
         curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/delta-${_ver#v}-${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
         sudo install -m 755 /tmp/delta-*/delta /usr/local/bin/delta
     fi
+fi
+{{ end -}}
+
+# ── lazygit ───────────────────────────────────────────────────────────────────
+{{ if .installLazygit -}}
+echo "── lazygit ──"
+if has lazygit; then
+    skip lazygit
+elif [ "$OS" = "darwin" ]; then
+    brew install lazygit
+else
+    _ver=$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+    _arch=$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/arm64/')
+    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${_ver}/lazygit_${_ver}_Linux_${_arch}.tar.gz" | tar -xz -C /tmp
+    sudo install -m 755 /tmp/lazygit /usr/local/bin/lazygit
 fi
 {{ end -}}
 
@@ -119,9 +112,11 @@ echo "── tmux ──"
 has tmux && skip tmux || { pkg_update; pkg_install tmux tmux tmux; }
 {{ end -}}
 
-# ── fzf ───────────────────────────────────────────────────────────────────────
-{{ if .installFzf -}}
-echo "── fzf ──"
+# ── shell tools (fzf / zoxide / bat / eza / ranger) ──────────────────────────
+{{ if .installShellTools -}}
+echo "── shell tools ──"
+
+# fzf
 if has fzf; then
     skip fzf
 elif [ "$OS" = "darwin" ]; then
@@ -133,21 +128,15 @@ elif [ "$IS_RHEL" = "true" ]; then
         git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all --no-update-rc
     }
 fi
-{{ end -}}
 
-# ── zoxide ────────────────────────────────────────────────────────────────────
-{{ if .installZoxide -}}
-echo "── zoxide ──"
+# zoxide
 if has zoxide; then
     skip zoxide
 else
     curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 fi
-{{ end -}}
 
-# ── bat ───────────────────────────────────────────────────────────────────────
-{{ if .installBat -}}
-echo "── bat ──"
+# bat
 if has bat || has batcat; then
     skip bat
 elif [ "$OS" = "darwin" ]; then
@@ -162,23 +151,13 @@ elif [ "$IS_RHEL" = "true" ]; then
         sudo install -m 755 /tmp/bat-*/bat /usr/local/bin/bat
     }
 fi
-{{ end -}}
 
-# ── htop ──────────────────────────────────────────────────────────────────────
-{{ if .installHtop -}}
-echo "── htop ──"
-has htop && skip htop || { pkg_update; pkg_install htop htop htop; }
-{{ end -}}
-
-# ── eza ───────────────────────────────────────────────────────────────────────
-{{ if .installEza -}}
-echo "── eza ──"
+# eza
 if has eza; then
     skip eza
 elif [ "$OS" = "darwin" ]; then
     brew install eza
 elif [ "$IS_DEBIAN" = "true" ]; then
-    # eza requires Rust or a PPA on older Debian/Ubuntu
     sudo mkdir -p /etc/apt/keyrings
     wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc \
         | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
@@ -193,21 +172,16 @@ elif [ "$IS_RHEL" = "true" ]; then
         sudo install -m 755 /tmp/eza /usr/local/bin/eza
     }
 fi
+
+# ranger
+has ranger && skip ranger || { pkg_update; pkg_install ranger ranger ranger; }
+
 {{ end -}}
 
-# ── lazygit ───────────────────────────────────────────────────────────────────
-{{ if .installLazygit -}}
-echo "── lazygit ──"
-if has lazygit; then
-    skip lazygit
-elif [ "$OS" = "darwin" ]; then
-    brew install lazygit
-else
-    _ver=$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
-    _arch=$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/arm64/')
-    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${_ver}/lazygit_${_ver}_Linux_${_arch}.tar.gz" | tar -xz -C /tmp
-    sudo install -m 755 /tmp/lazygit /usr/local/bin/lazygit
-fi
+# ── htop ──────────────────────────────────────────────────────────────────────
+{{ if .installHtop -}}
+echo "── htop ──"
+has htop && skip htop || { pkg_update; pkg_install htop htop htop; }
 {{ end -}}
 
 # ── neovim + ripgrep + fd-find ────────────────────────────────────────────────
@@ -242,12 +216,6 @@ elif [ "$IS_DEBIAN" = "true" ]; then
 elif [ "$IS_RHEL" = "true" ]; then
     sudo dnf install -y fd-find 2>/dev/null || sudo dnf install -y fd
 fi
-{{ end -}}
-
-# ── ranger ────────────────────────────────────────────────────────────────────
-{{ if .installRanger -}}
-echo "── ranger ──"
-has ranger && skip ranger || { pkg_update; pkg_install ranger ranger ranger; }
 {{ end -}}
 
 # ── uv ────────────────────────────────────────────────────────────────────────
