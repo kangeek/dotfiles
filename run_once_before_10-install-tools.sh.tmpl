@@ -80,12 +80,14 @@ if has fzf; then
     skip fzf
 elif [ "$OS" = "darwin" ]; then
     brew install fzf
-elif [ "$IS_DEBIAN" = "true" ]; then
-    pkg_update && sudo apt-get install -y fzf
-elif [ "$IS_RHEL" = "true" ]; then
-    sudo dnf install -y fzf 2>/dev/null || {
-        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all --no-update-rc
-    }
+else
+    _ver=$(gh_latest junegunn/fzf)
+    _arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+    _tmp=$(mktemp /tmp/fzf-XXXXXX.tar.gz)
+    curl -fsSL "https://github.com/junegunn/fzf/releases/download/v${_ver}/fzf-${_ver}-linux_${_arch}.tar.gz" -o "$_tmp"
+    tar -xz -C /tmp -f "$_tmp"
+    sudo install -m 755 /tmp/fzf /usr/local/bin/fzf
+    rm -f "$_tmp" /tmp/fzf
 fi
 
 # zoxide
@@ -93,18 +95,14 @@ if has zoxide; then
     skip zoxide
 elif [ "$OS" = "darwin" ]; then
     brew install zoxide
-elif [ "$IS_DEBIAN" = "true" ]; then
-    pkg_update && sudo apt-get install -y zoxide
 else
-    sudo dnf install -y zoxide 2>/dev/null || {
-        _ver=$(gh_latest ajeetdsouza/zoxide)
-        _arch=$(uname -m)
-        _tmp=$(mktemp /tmp/zoxide-XXXXXX.tar.gz)
-        curl -fsSL "https://github.com/ajeetdsouza/zoxide/releases/download/v${_ver}/zoxide-${_ver}-${_arch}-unknown-linux-musl.tar.gz" -o "$_tmp"
-        tar -xz -C /tmp -f "$_tmp"
-        sudo install -m 755 /tmp/zoxide /usr/local/bin/zoxide
-        rm -f "$_tmp" /tmp/zoxide
-    }
+    _ver=$(gh_latest ajeetdsouza/zoxide)
+    _arch=$(uname -m)
+    _tmp=$(mktemp /tmp/zoxide-XXXXXX.tar.gz)
+    curl -fsSL "https://github.com/ajeetdsouza/zoxide/releases/download/v${_ver}/zoxide-${_ver}-${_arch}-unknown-linux-musl.tar.gz" -o "$_tmp"
+    tar -xz -C /tmp -f "$_tmp"
+    sudo install -m 755 /tmp/zoxide /usr/local/bin/zoxide
+    rm -f "$_tmp" /tmp/zoxide
 fi
 
 # bat
@@ -112,20 +110,16 @@ if has bat || has batcat; then
     skip bat
 elif [ "$OS" = "darwin" ]; then
     brew install bat
-elif [ "$IS_DEBIAN" = "true" ]; then
-    pkg_update && sudo apt-get install -y bat
-elif [ "$IS_RHEL" = "true" ]; then
-    sudo dnf install -y bat 2>/dev/null || {
-        _ver=$(gh_latest sharkdp/bat)
-        _arch=$(uname -m)
-        _target="unknown-linux-musl"
-        [[ "$_arch" == "aarch64" ]] && _target="unknown-linux-gnu"
-        _tmp=$(mktemp /tmp/bat-XXXXXX.tar.gz)
-        curl -fsSL "https://github.com/sharkdp/bat/releases/download/v${_ver}/bat-v${_ver}-${_arch}-${_target}.tar.gz" -o "$_tmp"
-        tar -xz -C /tmp -f "$_tmp"
-        sudo install -m 755 /tmp/bat-*/bat /usr/local/bin/bat
-        rm -rf /tmp/bat-*/ "$_tmp"
-    }
+else
+    _ver=$(gh_latest sharkdp/bat)
+    _arch=$(uname -m)
+    _target="unknown-linux-musl"
+    [[ "$_arch" == "aarch64" ]] && _target="unknown-linux-gnu"
+    _tmp=$(mktemp /tmp/bat-XXXXXX.tar.gz)
+    curl -fsSL "https://github.com/sharkdp/bat/releases/download/v${_ver}/bat-v${_ver}-${_arch}-${_target}.tar.gz" -o "$_tmp"
+    tar -xz -C /tmp -f "$_tmp"
+    sudo install -m 755 /tmp/bat-*/bat /usr/local/bin/bat
+    rm -rf /tmp/bat-*/ "$_tmp"
 fi
 
 # eza
@@ -202,26 +196,41 @@ if has nvim; then
     skip neovim
 elif [ "$OS" = "darwin" ]; then
     brew install neovim
-elif [ "$IS_DEBIAN" = "true" ]; then
-    pkg_update && sudo apt-get install -y neovim
-elif [ "$IS_RHEL" = "true" ]; then
-    sudo dnf install -y neovim 2>/dev/null || {
-        _nvim_arch=$(uname -m)
-        _nvim_tar="nvim-linux-${_nvim_arch}.tar.gz"
-        curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/${_nvim_tar}" \
-            | sudo tar -xz -C /opt
-        sudo ln -sf "/opt/nvim-linux-${_nvim_arch}/bin/nvim" /usr/local/bin/nvim
-    }
+else
+    _nvim_arch=$(uname -m)
+    _nvim_tmp=$(mktemp /tmp/nvim-XXXXXX.tar.gz)
+    curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${_nvim_arch}.tar.gz" -o "$_nvim_tmp"
+    sudo tar -xz -C /opt -f "$_nvim_tmp"
+    sudo ln -sf "/opt/nvim-linux-${_nvim_arch}/bin/nvim" /usr/local/bin/nvim
+    rm -f "$_nvim_tmp"
 fi
-has rg && skip ripgrep || { pkg_update; pkg_install ripgrep ripgrep ripgrep; }
+if has rg; then
+    skip ripgrep
+elif [ "$OS" = "darwin" ]; then
+    brew install ripgrep
+else
+    _ver=$(gh_latest BurntSushi/ripgrep)
+    _arch=$(uname -m)
+    _target="unknown-linux-musl"
+    [[ "$_arch" == "aarch64" ]] && _target="unknown-linux-gnu"
+    _tmp=$(mktemp /tmp/rg-XXXXXX.tar.gz)
+    curl -fsSL "https://github.com/BurntSushi/ripgrep/releases/download/${_ver}/ripgrep-${_ver}-${_arch}-${_target}.tar.gz" -o "$_tmp"
+    tar -xz -C /tmp -f "$_tmp"
+    sudo install -m 755 /tmp/ripgrep-*/rg /usr/local/bin/rg
+    rm -rf /tmp/ripgrep-*/ "$_tmp"
+fi
 if has fd || has fdfind; then
     skip fd-find
 elif [ "$OS" = "darwin" ]; then
     brew install fd
-elif [ "$IS_DEBIAN" = "true" ]; then
-    pkg_update && sudo apt-get install -y fd-find
-elif [ "$IS_RHEL" = "true" ]; then
-    sudo dnf install -y fd-find 2>/dev/null || sudo dnf install -y fd
+else
+    _ver=$(gh_latest sharkdp/fd)
+    _arch=$(uname -m)
+    _tmp=$(mktemp /tmp/fd-XXXXXX.tar.gz)
+    curl -fsSL "https://github.com/sharkdp/fd/releases/download/v${_ver}/fd-v${_ver}-${_arch}-unknown-linux-musl.tar.gz" -o "$_tmp"
+    tar -xz -C /tmp -f "$_tmp"
+    sudo install -m 755 /tmp/fd-*/fd /usr/local/bin/fd
+    rm -rf /tmp/fd-*/ "$_tmp"
 fi
 {{ end -}}
 
