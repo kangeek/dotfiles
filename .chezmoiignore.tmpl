@@ -20,7 +20,7 @@
 .oh-my-zsh
 
 # Ranger external plugins & themes
-.config/ranger/colorschemes/dracula
+.config/ranger/colorschemes/catppuccin
 .config/ranger/plugins/zoxide
 
 # Neovim config (separate repo)
@@ -49,6 +49,9 @@
 {{ end -}}
 {{ if not .installHtop -}}
 .config/htop
+{{ end -}}
+{{ if not .installBtop -}}
+.config/btop
 {{ end -}}
 {{ if not .installNeovim -}}
 .config/nvim

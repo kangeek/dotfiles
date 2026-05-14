@@ -52,11 +52,11 @@
 # ──────────────────────────────────────────────────────────────────────────────
 # Ranger plugins & themes (third-party, read-only follow upstream)
 # ──────────────────────────────────────────────────────────────────────────────
-[".config/ranger/colorschemes/dracula"]
+[".config/ranger/colorschemes/catppuccin"]
   type          = "git-repo"
-  url           = "https://github.com/dracula/ranger.git"
+  url           = "https://github.com/dfrico/catppuccin-ranger.git"
   refreshPeriod = "168h"
-  [".config/ranger/colorschemes/dracula".clone]
+  [".config/ranger/colorschemes/catppuccin".clone]
     args = ["--depth", "1"]
 
 [".config/ranger/plugins/zoxide"]

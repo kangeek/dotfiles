@@ -154,6 +154,37 @@ echo "── htop ──"
 has htop && skip htop || { pkg_update; pkg_install htop htop htop; }
 {{ end -}}
 
+# ── btop ──────────────────────────────────────────────────────────────────────
+{{ if .installBtop -}}
+echo "── btop ──"
+if has btop; then
+    skip btop
+elif [ "$OS" = "darwin" ]; then
+    brew install btop
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update
+    sudo apt-get install -y btop 2>/dev/null || {
+        _ver=$(gh_latest aristocratos/btop)
+        _arch=$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/aarch64/')
+        _tmp=$(mktemp /tmp/btop-XXXXXX.tbz)
+        curl -fsSL "https://github.com/aristocratos/btop/releases/download/v${_ver}/btop-${_arch}-linux-musl.tbz" -o "$_tmp"
+        tar -xj -C /tmp -f "$_tmp"
+        sudo make -C /tmp/btop install PREFIX=/usr/local
+        rm -rf /tmp/btop "$_tmp"
+    }
+elif [ "$IS_RHEL" = "true" ]; then
+    sudo dnf install -y btop 2>/dev/null || {
+        _ver=$(gh_latest aristocratos/btop)
+        _arch=$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/aarch64/')
+        _tmp=$(mktemp /tmp/btop-XXXXXX.tbz)
+        curl -fsSL "https://github.com/aristocratos/btop/releases/download/v${_ver}/btop-${_arch}-linux-musl.tbz" -o "$_tmp"
+        tar -xj -C /tmp -f "$_tmp"
+        sudo make -C /tmp/btop install PREFIX=/usr/local
+        rm -rf /tmp/btop "$_tmp"
+    }
+fi
+{{ end -}}
+
 # ── mise ──────────────────────────────────────────────────────────────────────
 {{ if .installMise -}}
 echo "── mise ──"
