@@ -64,7 +64,7 @@ else
 fi
 {{ end -}}
 
-# ── shell tools (fzf / zoxide / bat / eza / ranger) ──────────────────────────
+# ── shell tools (fzf / zoxide / bat / eza) ───────────────────────────────────
 {{ if .installShellTools -}}
 echo "── shell tools ──"
 
@@ -143,18 +143,6 @@ elif [ "$IS_RHEL" = "true" ]; then
         sudo install -m 755 /tmp/eza /usr/local/bin/eza
         rm -f "$_tmp" /tmp/eza
     }
-fi
-
-# ranger (not in default RHEL repos — fall back to pip3)
-if has ranger; then
-    skip ranger
-elif [ "$OS" = "darwin" ]; then
-    brew install ranger
-elif [ "$IS_DEBIAN" = "true" ]; then
-    pkg_update && sudo apt-get install -y ranger
-else
-    sudo dnf install -y ranger 2>/dev/null \
-        || python3 -m pip install --user ranger-fm
 fi
 
 {{ end -}}
@@ -241,6 +229,36 @@ if has uv; then
     skip uv
 else
     curl -fsSL https://astral.sh/uv/install.sh | sh
+fi
+{{ end -}}
+
+# ── ranger ────────────────────────────────────────────────────────────────────
+{{ if .installRanger -}}
+echo "── ranger ──"
+if has ranger; then
+    skip ranger
+elif [ "$OS" = "darwin" ]; then
+    brew install ranger
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update && sudo apt-get install -y ranger
+else
+    if sudo dnf install -y ranger 2>/dev/null; then
+        :
+    elif sudo dnf install -y epel-release 2>/dev/null \
+        && sudo dnf install -y ranger 2>/dev/null; then
+        :
+    else
+        _uvcmd=""
+        has uv && _uvcmd="uv"
+        [ -z "$_uvcmd" ] && [ -x "$HOME/.local/bin/uv" ] && _uvcmd="$HOME/.local/bin/uv"
+        if [ -n "$_uvcmd" ]; then
+            "$_uvcmd" tool install ranger-fm
+        else
+            echo "⚠️  ranger skipped: not in dnf repos, EPEL install failed," \
+                 "and uv is not installed. Set installUv=true and re-run," \
+                 "or install EPEL manually." >&2
+        fi
+    fi
 fi
 {{ end -}}
 

@@ -25,13 +25,14 @@ encryption = "age"
      relevant bool to true, then run: chezmoi apply
      ──────────────────────────────────────────────────────────────────────── */}}
 {{- $installZsh        := promptBoolOnce . "installZsh"        "Install zsh + oh-my-zsh + p10k"                       true  -}}
-{{- $installShellTools := promptBoolOnce . "installShellTools" "Install shell tools (fzf / zoxide / bat / eza / ranger)" true  -}}
+{{- $installShellTools := promptBoolOnce . "installShellTools" "Install shell tools (fzf / zoxide / bat / eza)" true  -}}
 {{- $installHtop       := promptBoolOnce . "installHtop"       "Install htop"                                         true  -}}
 {{- $installMise       := promptBoolOnce . "installMise"       "Install mise (tool version manager)"                  true  -}}
 {{- $installTmux       := promptBoolOnce . "installTmux"       "Install tmux"                                         true  -}}
 {{- $installLazygit    := promptBoolOnce . "installLazygit"    "Install lazygit"                                      false -}}
 {{- $installNeovim     := promptBoolOnce . "installNeovim"     "Install neovim + ripgrep + fd-find"                   false -}}
 {{- $installUv         := promptBoolOnce . "installUv"         "Install uv (Python package manager)"                  false -}}
+{{- $installRanger     := promptBoolOnce . "installRanger"     "Install ranger (file manager)"                        false -}}
 {{- $installSops       := promptBoolOnce . "installSops"       "Install sops"                                         false -}}
 {{- $installWezterm    := promptBoolOnce . "installWezterm"    "Install wezterm (macOS only)"                         false -}}
 {{- $installKarabiner  := promptBoolOnce . "installKarabiner"  "Install karabiner-elements (macOS only)"              false -}}
@@ -46,6 +47,7 @@ encryption = "age"
     installLazygit    = {{ $installLazygit }}
     installNeovim     = {{ $installNeovim }}
     installUv         = {{ $installUv }}
+    installRanger     = {{ $installRanger }}
     installSops       = {{ $installSops }}
     installWezterm    = {{ $installWezterm }}
     installKarabiner  = {{ $installKarabiner }}

@@ -89,22 +89,24 @@ Type `true` / `false` (or just press Enter to accept the default) for each promp
 Age private key (AGE-SECRET-KEY-1..., leave empty to skip — encrypted files will not sync):
 
 Install zsh + oh-my-zsh + p10k?            (default: true)
-Install shell tools (zoxide, bat, eza...)? (default: true)
-Install htop?                              (default: true)
-Install mise (tool version manager)?       (default: true)
-Install tmux?                              (default: true)
-Install lazygit?                           (default: false)
-Install neovim + ripgrep + fd-find?        (default: false)
-Install uv (Python package manager)?       (default: false)
-Install sops?                              (default: false)
-Install wezterm (macOS only)?              (default: false)
-Install karabiner-elements (macOS only)?   (default: false)
+Install shell tools (fzf / zoxide / bat / eza)?   (default: true)
+Install htop?                                     (default: true)
+Install mise (tool version manager)?              (default: true)
+Install tmux?                                     (default: true)
+Install lazygit?                                  (default: false)
+Install neovim + ripgrep + fd-find?               (default: false)
+Install uv (Python package manager)?              (default: false)
+Install ranger (file manager)?                    (default: false)
+Install sops?                                     (default: false)
+Install wezterm (macOS only)?                     (default: false)
+Install karabiner-elements (macOS only)?          (default: false)
 ```
 
 - **Age key**: paste your `AGE-SECRET-KEY-1...` private key for full encryption support, or leave empty to skip
 - **Tools**: press Enter to accept the default; type `true` or `false` to override
 - Prerequisites (`curl`, `wget`, `gpg`, `age`, `git`, `git-delta`) are installed automatically before anything else
 - All tools are installed idempotently — already-installed tools are skipped
+- **ranger on RHEL/Rocky**: not in the default repos. The script will install `epel-release` automatically and retry. If EPEL is unavailable and `uv` is installed, `ranger-fm` is installed via `uv tool install`. Otherwise a warning is printed and the script continues without failing.
 
 ---
 
