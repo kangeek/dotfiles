@@ -72,35 +72,40 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin
 ### 2. Initialize and apply
 
 ```bash
-chezmoi init --apply kangeek
+~/.local/bin/chezmoi init --apply kangeek
 ```
 
-The init process will prompt you interactively:
+The init process will prompt you interactively. Each tool question looks like:
+
+```
+Install git + git-delta?
+Install lazygit?
+Install zsh + oh-my-zsh + p10k?
+> bool, default true
+```
+
+Type `true` / `false` (or just press Enter to accept the default) for each prompt. Full prompt sequence:
 
 ```
 Age private key (AGE-SECRET-KEY-1..., leave empty to skip — encrypted files will not sync):
 
-Install curl + wget? [Y/n]:
-Install network tools (ping/dig/nslookup/netstat)? [Y/n]:
-Install git + git-delta? [Y/n]:
-Install zsh + oh-my-zsh + p10k? [Y/n]:
-Install mise (tool version manager)? [Y/n]:
-Install tmux? [Y/n]:
-Install fzf? [Y/n]:
-Install zoxide? [Y/n]:
-Install bat? [Y/n]:
-Install htop? [Y/n]:
-Install eza? [Y/n]:
-Install lazygit? [y/N]:
-Install neovim + ripgrep + fd-find? [y/N]:
-Install ranger? [y/N]:
-Install uv (Python package manager)? [y/N]:
-Install sops? [y/N]:
+Install git + git-delta?                 (default: true)
+Install lazygit?                         (default: false)
+Install zsh + oh-my-zsh + p10k?          (default: true)
+Install mise (tool version manager)?     (default: true)
+Install tmux?                            (default: true)
+Install shell tools (fzf / zoxide / bat / eza / ranger)? (default: true)
+Install htop?                            (default: true)
+Install neovim + ripgrep + fd-find?      (default: false)
+Install uv (Python package manager)?     (default: false)
+Install sops?                            (default: false)
+Install wezterm (macOS only)?            (default: false)
+Install karabiner-elements (macOS only)? (default: false)
 ```
 
 - **Age key**: paste your `AGE-SECRET-KEY-1...` private key for full encryption support, or leave empty to skip
-- **Tools**: `Y/n` = recommended, `y/N` = optional. Press Enter to accept the default
-- `age` is installed automatically before the key is written
+- **Tools**: press Enter to accept the default; type `true` or `false` to override
+- Prerequisites (`curl`, `wget`, `gpg`, `age`) are installed automatically before anything else
 - All tools are installed idempotently — already-installed tools are skipped
 
 ---

@@ -1,5 +1,6 @@
 #!/bin/bash
 # Write age private key to key.txt if it was provided during init.
+# Runs after run_once_before_00-install-prereqs.sh (age must be installed first).
 # This script runs once (keyed by its content hash).
 {{ if and (not (stat (joinPath .chezmoi.homeDir ".config/chezmoi/key.txt"))) (ne (index . "ageIdentity" | default "") "") -}}
 mkdir -p {{ joinPath .chezmoi.homeDir ".config/chezmoi" | quote }}

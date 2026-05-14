@@ -1,0 +1,97 @@
+#!/bin/bash
+# Install prerequisite binaries required by subsequent scripts:
+#   - curl  : download binaries from GitHub Releases
+#   - wget  : needed by eza Debian install (apt key fetch)
+#   - gpg   : needed by eza Debian install (dearmor key)
+#   - age   : chezmoi encryption; must exist before run_once_before_01 writes key.txt
+set -euo pipefail
+
+{{- if eq .chezmoi.os "darwin" }}
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+if ! command -v brew &>/dev/null; then
+    echo "❌ Homebrew not found. Install it first: https://brew.sh" >&2
+    exit 1
+fi
+
+command -v curl &>/dev/null || brew install curl
+command -v wget &>/dev/null || brew install wget
+command -v gpg  &>/dev/null || brew install gnupg
+command -v age  &>/dev/null || brew install age
+
+{{- else if eq .chezmoi.os "linux" }}
+
+# ── Linux ─────────────────────────────────────────────────────────────────────
+{{-   $id     := .chezmoi.osRelease.id | default "" }}
+{{-   $idLike := get .chezmoi.osRelease "id_like" | default "" }}
+{{-   $isDebian := or (eq $id "debian") (eq $id "ubuntu") (contains "debian" $idLike) (contains "ubuntu" $idLike) }}
+{{-   $isRhel   := or (eq $id "fedora") (eq $id "rhel") (eq $id "centos") (eq $id "rocky") (eq $id "almalinux") (contains "rhel" $idLike) (contains "fedora" $idLike) }}
+
+{{-   if $isDebian }}
+_needs_update=false
+command -v curl &>/dev/null || _needs_update=true
+command -v wget &>/dev/null || _needs_update=true
+command -v gpg  &>/dev/null || _needs_update=true
+if [ "$_needs_update" = "true" ]; then
+    sudo apt-get update -qq
+    command -v curl &>/dev/null || sudo apt-get install -y curl
+    command -v wget &>/dev/null || sudo apt-get install -y wget
+    command -v gpg  &>/dev/null || sudo apt-get install -y gnupg
+fi
+
+if command -v age &>/dev/null; then
+    echo "✅ age already installed: $(age --version)"
+else
+    echo "📦 Installing age..."
+    if apt-cache show age &>/dev/null 2>&1; then
+        sudo apt-get install -y age
+    else
+        _install_age_binary
+    fi
+fi
+
+{{-   else if $isRhel }}
+command -v curl &>/dev/null || sudo dnf install -y curl
+command -v wget &>/dev/null || sudo dnf install -y wget
+command -v gpg  &>/dev/null || sudo dnf install -y gnupg2
+
+if command -v age &>/dev/null; then
+    echo "✅ age already installed: $(age --version)"
+else
+    echo "📦 Installing age..."
+    if dnf list age &>/dev/null 2>&1; then
+        sudo dnf install -y age
+    elif yum list age &>/dev/null 2>&1; then
+        sudo yum install -y age
+    else
+        _install_age_binary
+    fi
+fi
+
+{{-   else }}
+if ! command -v age &>/dev/null; then
+    echo "📦 Installing age..."
+    _install_age_binary
+fi
+{{-   end }}
+
+{{- end }}
+
+_install_age_binary() {
+    local version
+    version=$(curl -fsSL https://api.github.com/repos/FiloSottile/age/releases/latest \
+        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+    local arch
+    case "$(uname -m)" in
+        x86_64)  arch="amd64" ;;
+        aarch64|arm64) arch="arm64" ;;
+        *) echo "❌ Unsupported arch: $(uname -m)" >&2; exit 1 ;;
+    esac
+    local url="https://github.com/FiloSottile/age/releases/download/v${version}/age-v${version}-linux-${arch}.tar.gz"
+    curl -fsSL "$url" | tar -xz -C /tmp
+    sudo install -m 755 /tmp/age/age /usr/local/bin/age
+    sudo install -m 755 /tmp/age/age-keygen /usr/local/bin/age-keygen
+    rm -rf /tmp/age
+}
+
+echo "✅ Prerequisites ready (curl / wget / gpg / age)"

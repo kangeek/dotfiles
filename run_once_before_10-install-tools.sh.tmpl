@@ -44,45 +44,6 @@ pkg_update() {
     fi
 }
 
-# ── git + git-delta ───────────────────────────────────────────────────────────
-{{ if .installGit -}}
-echo "── git + git-delta ──"
-has git && skip git || { pkg_update; pkg_install git git git; }
-if has delta; then
-    skip git-delta
-else
-    if [ "$OS" = "darwin" ]; then
-        brew install git-delta
-    elif [ "$IS_DEBIAN" = "true" ]; then
-        # delta is not in apt; install via cargo or binary
-        _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
-        _arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
-        curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/git-delta_${_ver#v}_${_arch}.deb" -o /tmp/git-delta.deb
-        sudo dpkg -i /tmp/git-delta.deb && rm /tmp/git-delta.deb
-    elif [ "$IS_RHEL" = "true" ]; then
-        _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
-        _arch=$(uname -m)
-        curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/delta-${_ver#v}-${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
-        sudo install -m 755 /tmp/delta-*/delta /usr/local/bin/delta
-    fi
-fi
-{{ end -}}
-
-# ── lazygit ───────────────────────────────────────────────────────────────────
-{{ if .installLazygit -}}
-echo "── lazygit ──"
-if has lazygit; then
-    skip lazygit
-elif [ "$OS" = "darwin" ]; then
-    brew install lazygit
-else
-    _ver=$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
-    _arch=$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/arm64/')
-    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${_ver}/lazygit_${_ver}_Linux_${_arch}.tar.gz" | tar -xz -C /tmp
-    sudo install -m 755 /tmp/lazygit /usr/local/bin/lazygit
-fi
-{{ end -}}
-
 # ── zsh + oh-my-zsh + p10k ────────────────────────────────────────────────────
 {{ if .installZsh -}}
 echo "── zsh ──"
@@ -93,23 +54,6 @@ else
     echo "📦 Installing oh-my-zsh..."
     RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
-{{ end -}}
-
-# ── mise ──────────────────────────────────────────────────────────────────────
-{{ if .installMise -}}
-echo "── mise ──"
-if has mise; then
-    skip mise
-else
-    curl -fsSL https://mise.run | sh
-    echo "💡 Add mise to your PATH: eval \"\$(~/.local/bin/mise activate zsh)\""
-fi
-{{ end -}}
-
-# ── tmux ──────────────────────────────────────────────────────────────────────
-{{ if .installTmux -}}
-echo "── tmux ──"
-has tmux && skip tmux || { pkg_update; pkg_install tmux tmux tmux; }
 {{ end -}}
 
 # ── shell tools (fzf / zoxide / bat / eza / ranger) ──────────────────────────
@@ -182,6 +126,61 @@ has ranger && skip ranger || { pkg_update; pkg_install ranger ranger ranger; }
 {{ if .installHtop -}}
 echo "── htop ──"
 has htop && skip htop || { pkg_update; pkg_install htop htop htop; }
+{{ end -}}
+
+# ── mise ──────────────────────────────────────────────────────────────────────
+{{ if .installMise -}}
+echo "── mise ──"
+if has mise; then
+    skip mise
+else
+    curl -fsSL https://mise.run | sh
+    echo "💡 Add mise to your PATH: eval \"\$(~/.local/bin/mise activate zsh)\""
+fi
+{{ end -}}
+
+# ── tmux ──────────────────────────────────────────────────────────────────────
+{{ if .installTmux -}}
+echo "── tmux ──"
+has tmux && skip tmux || { pkg_update; pkg_install tmux tmux tmux; }
+{{ end -}}
+
+# ── git + git-delta ───────────────────────────────────────────────────────────
+{{ if .installGit -}}
+echo "── git + git-delta ──"
+has git && skip git || { pkg_update; pkg_install git git git; }
+if has delta; then
+    skip git-delta
+else
+    if [ "$OS" = "darwin" ]; then
+        brew install git-delta
+    elif [ "$IS_DEBIAN" = "true" ]; then
+        _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
+        _arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+        curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/git-delta_${_ver#v}_${_arch}.deb" -o /tmp/git-delta.deb
+        sudo dpkg -i /tmp/git-delta.deb && rm /tmp/git-delta.deb
+    elif [ "$IS_RHEL" = "true" ]; then
+        _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
+        _arch=$(uname -m)
+        curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/delta-${_ver#v}-${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
+        sudo install -m 755 /tmp/delta-*/delta /usr/local/bin/delta
+    fi
+fi
+{{ end -}}
+
+# ── lazygit ───────────────────────────────────────────────────────────────────
+{{ if .installLazygit -}}
+echo "── lazygit ──"
+if has lazygit; then
+    skip lazygit
+elif [ "$OS" = "darwin" ]; then
+    brew install lazygit
+else
+    _ver=$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+    _arch=$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/arm64/')
+    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${_ver}/lazygit_${_ver}_Linux_${_arch}.tar.gz" | tar -xz -C /tmp
+    sudo install -m 755 /tmp/lazygit /usr/local/bin/lazygit
+fi
 {{ end -}}
 
 # ── neovim + ripgrep + fd-find ────────────────────────────────────────────────
