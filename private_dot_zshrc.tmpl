@@ -129,91 +129,53 @@ typeset -U path # deduplication
 ################################## Oh My Zsh ###################################
 
 
-################################## OS related ##################################
-if [ "$(uname)" = "Linux" ]; then
-
-    ################### Alias ####################
-    command -v virsh &> /dev/null && alias virsh="sudo virsh"
-    command -v brctl &> /dev/null && alias brctl="sudo brctl"
-    ################### Alias ####################
-
-    ################### Dev & Env ####################
-    #
-    # >>> Setting proxy from clashx
-    # if [ "$(hostname)" = "main" ]; then
-    #     export http_proxy=http://mac.kang.zone:7890 https_proxy=http://mac.kang.zone:7890 all_proxy=socks5://mac.kang.zone:7890
-    # else
-    #     export http_proxy=http://$(hostname):7890 https_proxy=http://$(hostname):7890 all_proxy=socks5://$(hostname):7890
-    # fi
-    # export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.gitlab.cool
-    # <<< Setting proxy from clashx
-    #
-    # >>> neovim
-    export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
-    # <<< neovim
-    ################### Dev & Env ####################
-
-elif [ "$(uname)" = "Darwin" ]; then
-
-    ################### Alias ####################
-    alias o="open"
-    alias vv="virt-viewer -c 'qemu+ssh://root@lab/system?&socket=/run/libvirt/libvirt-sock'"
-    ################### Alias ####################
-
-    ################### tsh (1password-cli required) ####################
-    [[ -f ~/.config/zsh/mytsh/mytsh.zsh ]] && source ~/.config/zsh/mytsh/mytsh.zsh
-    ################### tsh ####################
-
-    ################## DevEnv ####################
-    # export https_proxy=http://192.168.192.88:7890 http_proxy=http://192.168.192.88:7890 all_proxy=socks5://192.168.192.88:7891
-    # export no_proxy=localhost,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,*.kang.zone,*.paymaya.com,*.goskope.com,*.ap-southeast-1.eks.amazonaws.com,*.voyagerapis.com
-    #
-    # >>> homebrew-bottles
-    export HOMEBREW_CORE_GIT_REMOTE=https://mirrors.ustc.edu.cn/homebrew-core.git
-    export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
-    # export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles
-    # export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles
-    export HOMEBREW_CLEANUP_MAX_AGE_DAYS=0
-    export BREW_HOME="/opt/homebrew"
-    # <<< homebrew-bottles
-    #
-    # >>> set PATHs
-    path=(
-      # gnu tools
-      ${BREW_HOME}/opt/coreutils/libexec/gnubin
-      ${BREW_HOME}/opt/gawk/libexec/gnubin
-      ${BREW_HOME}/opt/gnu-sed/libexec/gnubin
-      ${BREW_HOME}/opt/gnu-tar/libexec/gnubin
-      ${BREW_HOME}/opt/findutils/libexec/gnubin
-      ${BREW_HOME}/opt/grep/libexec/gnubin
-      ${BREW_HOME}/opt/openssl@3/bin
-      ${BREW_HOME}/opt/postgresql@16/bin
-      ${BREW_HOME}/sbin
-      ${BREW_HOME}/bin
-      #
-      # others
-      ${HOME}/.codeium/windsurf/bin
-      ${HOME}/.antigravity/antigravity/bin
-      #
-      ${path}
-    )
-    # <<< set PATHs
-    #
-    #export LDFLAGS="-L${BREW_HOME}/opt/binutils/lib"
-    #export CPPFLAGS="-I${BREW_HOME}/opt/binutils/include"
-    #
-    # >>> autocompletion
-    autoload -U +X bashcompinit && bashcompinit
-    complete -o nospace -C /opt/homebrew/bin/mc mc
-    # <<< autocompletion
-    ################## DevEnv ####################
-
-fi
-################################## OS related ##################################
-
-
 #################################### DevEnv ####################################
 #
+{{ if eq .chezmoi.os "darwin" -}}
+# >>> homebrew
+export HOMEBREW_CORE_GIT_REMOTE=https://mirrors.ustc.edu.cn/homebrew-core.git
+export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
+export HOMEBREW_CLEANUP_MAX_AGE_DAYS=0
+export BREW_HOME="/opt/homebrew"
+# <<< homebrew
+#
+# >>> PATH (GNU tools via brew, custom bins)
+path=(
+  # gnu tools
+  ${BREW_HOME}/opt/coreutils/libexec/gnubin
+  ${BREW_HOME}/opt/gawk/libexec/gnubin
+  ${BREW_HOME}/opt/gnu-sed/libexec/gnubin
+  ${BREW_HOME}/opt/gnu-tar/libexec/gnubin
+  ${BREW_HOME}/opt/findutils/libexec/gnubin
+  ${BREW_HOME}/opt/grep/libexec/gnubin
+  ${BREW_HOME}/opt/openssl@3/bin
+  ${BREW_HOME}/opt/postgresql@16/bin
+  ${BREW_HOME}/sbin
+  ${BREW_HOME}/bin
+  #
+  # others
+  ${HOME}/.codeium/windsurf/bin
+  ${HOME}/.antigravity/antigravity/bin
+  #
+  ${path}
+)
+# <<< PATH
+#
+# >>> autocompletion
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/mc mc
+# <<< autocompletion
+#
+# >>> tsh (1password-cli required)
+[[ -f ~/.config/zsh/mytsh/mytsh.zsh ]] && source ~/.config/zsh/mytsh/mytsh.zsh
+# <<< tsh
+#
+{{ else if eq .chezmoi.os "linux" -}}
+# >>> neovim
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+# <<< neovim
+#
+{{ end -}}
 # >>> Aquire real IP (especially when using fake-ip)
 realip() { curl -s "https://dns.google/resolve?name=$1&type=A" | jq -r '.Answer[] | select(.type == 1) | .data'; }
 # <<< Aquire real IP
@@ -293,19 +255,30 @@ stty -ixon
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
-alias ap="ansible-playbook"
-alias ce="gh copilot explain"
-alias cs="gh copilot suggest"
+{{ if eq .chezmoi.os "linux" -}}
+command -v virsh &> /dev/null && alias virsh="sudo virsh"
+command -v brctl &> /dev/null && alias brctl="sudo brctl"
+{{ else if eq .chezmoi.os "darwin" -}}
+alias o="open"
 alias a="antigravity"
 alias w="windsurf"
 alias c="cursor"
+alias dl="aria2c"
+command -v multipass &> /dev/null && alias mp="sudo multipass"
+alias vv="virt-viewer -c 'qemu+ssh://root@lab/system?&socket=/run/libvirt/libvirt-sock'"
+{{ end -}}
+#
+alias ap="ansible-playbook"
+alias ce="gh copilot explain"
+alias cs="gh copilot suggest"
 command -v bat &> /dev/null && alias cat="bat --style=plain"
 command -v batcat &> /dev/null && alias cat="batcat --style=plain" && alias bat="batcat"
 command -v zoxide &> /dev/null && alias cd="z"
+command -v eza &> /dev/null && alias ls="eza --git --icons=always --time-style '+%Y-%m-%d %H:%M'"
+command -v htop &> /dev/null && alias top="htop"
+command -v nvim &> /dev/null && alias vim="nvim"
 alias dc="docker-compose"
 alias df="chezmoi"
-alias dl="aria2c"
-command -v eza &> /dev/null && alias ls="eza --git --icons=always --time-style '+%Y-%m-%d %H:%M'"
 alias f="ranger"
 alias h="helm"
 alias hf="helmfile"
@@ -314,11 +287,9 @@ alias kg="kubectl get"
 alias kk="kubectl krew"
 alias lg="lazygit"
 alias lt="ls --tree --level 3"
-command -v multipass &> /dev/null && alias mp="sudo multipass"
 alias s="sesh list -i | gum filter --limit 1 --placeholder 'Pick a sesson' --prompt=' ' | xargs -I _SESSION_ sesh connect '_SESSION_'"
 command -v tofu &> /dev/null && alias tf="tofu" || (command -v terraform &> /dev/null && alias tf="terraform")
 alias mx="mise x --"
-command -v htop &> /dev/null && alias top="htop"
-command -v nvim &> /dev/null && alias vim="nvim"
+#
 #################################### Alias #####################################
 
