@@ -145,8 +145,17 @@ elif [ "$IS_RHEL" = "true" ]; then
     }
 fi
 
-# ranger
-has ranger && skip ranger || { pkg_update; pkg_install ranger ranger ranger; }
+# ranger (not in default RHEL repos — fall back to pip3)
+if has ranger; then
+    skip ranger
+elif [ "$OS" = "darwin" ]; then
+    brew install ranger
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update && sudo apt-get install -y ranger
+else
+    sudo dnf install -y ranger 2>/dev/null \
+        || python3 -m pip install --user ranger-fm
+fi
 
 {{ end -}}
 
