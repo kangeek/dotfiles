@@ -23,6 +23,14 @@ IS_RHEL=false
 has() { command -v "$1" &>/dev/null; }
 skip() { echo "✅ $1 already installed — skipping"; }
 
+# Resolve the latest release version via the redirect URL — no API call, no rate limit.
+# Usage: gh_latest owner/repo          → e.g. "0.44.1"  (v-prefix stripped)
+gh_latest() {
+    curl -fsSLI -o /dev/null -w '%{url_effective}' \
+        "https://github.com/$1/releases/latest" \
+        | sed 's|.*/tag/v\?||'
+}
+
 pkg_install() {
     # Usage: pkg_install <brew-pkg> <apt-pkg> <dnf-pkg>
     local brew_pkg="$1" apt_pkg="$2" dnf_pkg="$3"
@@ -76,8 +84,20 @@ fi
 # zoxide
 if has zoxide; then
     skip zoxide
+elif [ "$OS" = "darwin" ]; then
+    brew install zoxide
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update && sudo apt-get install -y zoxide
 else
-    curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+    sudo dnf install -y zoxide 2>/dev/null || {
+        _ver=$(gh_latest ajeetdsouza/zoxide)
+        _arch=$(uname -m)
+        _tmp=$(mktemp /tmp/zoxide-XXXXXX.tar.gz)
+        curl -fsSL "https://github.com/ajeetdsouza/zoxide/releases/download/v${_ver}/zoxide-${_ver}-${_arch}-unknown-linux-musl.tar.gz" -o "$_tmp"
+        tar -xz -C /tmp -f "$_tmp"
+        sudo install -m 755 /tmp/zoxide /usr/local/bin/zoxide
+        rm -f "$_tmp" /tmp/zoxide
+    }
 fi
 
 # bat
@@ -89,10 +109,15 @@ elif [ "$IS_DEBIAN" = "true" ]; then
     pkg_update && sudo apt-get install -y bat
 elif [ "$IS_RHEL" = "true" ]; then
     sudo dnf install -y bat 2>/dev/null || {
-        _ver=$(curl -fsSL https://api.github.com/repos/sharkdp/bat/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+        _ver=$(gh_latest sharkdp/bat)
         _arch=$(uname -m)
-        curl -fsSL "https://github.com/sharkdp/bat/releases/download/v${_ver}/bat-v${_ver}-${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
+        _target="unknown-linux-musl"
+        [[ "$_arch" == "aarch64" ]] && _target="unknown-linux-gnu"
+        _tmp=$(mktemp /tmp/bat-XXXXXX.tar.gz)
+        curl -fsSL "https://github.com/sharkdp/bat/releases/download/v${_ver}/bat-v${_ver}-${_arch}-${_target}.tar.gz" -o "$_tmp"
+        tar -xz -C /tmp -f "$_tmp"
         sudo install -m 755 /tmp/bat-*/bat /usr/local/bin/bat
+        rm -rf /tmp/bat-*/ "$_tmp"
     }
 fi
 
@@ -110,10 +135,13 @@ elif [ "$IS_DEBIAN" = "true" ]; then
     sudo apt-get update -qq && sudo apt-get install -y eza
 elif [ "$IS_RHEL" = "true" ]; then
     sudo dnf install -y eza 2>/dev/null || {
-        _ver=$(curl -fsSL https://api.github.com/repos/eza-community/eza/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+        _ver=$(gh_latest eza-community/eza)
         _arch=$(uname -m)
-        curl -fsSL "https://github.com/eza-community/eza/releases/download/v${_ver}/eza_${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
+        _tmp=$(mktemp /tmp/eza-XXXXXX.tar.gz)
+        curl -fsSL "https://github.com/eza-community/eza/releases/download/v${_ver}/eza_${_arch}-unknown-linux-gnu.tar.gz" -o "$_tmp"
+        tar -xz -C /tmp -f "$_tmp"
         sudo install -m 755 /tmp/eza /usr/local/bin/eza
+        rm -f "$_tmp" /tmp/eza
     }
 fi
 
@@ -153,10 +181,13 @@ if has lazygit; then
 elif [ "$OS" = "darwin" ]; then
     brew install lazygit
 else
-    _ver=$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
-    _arch=$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/arm64/')
-    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${_ver}/lazygit_${_ver}_Linux_${_arch}.tar.gz" | tar -xz -C /tmp
+    _ver=$(gh_latest jesseduffield/lazygit)
+    _arch=$(uname -m | sed 's/aarch64/arm64/')
+    _tmp=$(mktemp /tmp/lazygit-XXXXXX.tar.gz)
+    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${_ver}/lazygit_${_ver}_Linux_${_arch}.tar.gz" -o "$_tmp"
+    tar -xz -C /tmp -f "$_tmp"
     sudo install -m 755 /tmp/lazygit /usr/local/bin/lazygit
+    rm -f "$_tmp" /tmp/lazygit
 fi
 {{ end -}}
 
@@ -212,7 +243,7 @@ if has sops; then
 elif [ "$OS" = "darwin" ]; then
     brew install sops
 else
-    _ver=$(curl -fsSL https://api.github.com/repos/getsops/sops/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+    _ver=$(gh_latest getsops/sops)
     _arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
     if [ "$IS_DEBIAN" = "true" ]; then
         curl -fsSL "https://github.com/getsops/sops/releases/download/v${_ver}/sops_${_ver}_${_arch}.deb" -o /tmp/sops.deb
