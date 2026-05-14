@@ -8,6 +8,23 @@
 #   - git-delta : improved git diff pager
 set -euo pipefail
 
+_install_age_binary() {
+    local version
+    version=$(curl -fsSL https://api.github.com/repos/FiloSottile/age/releases/latest \
+        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+    local arch
+    case "$(uname -m)" in
+        x86_64)  arch="amd64" ;;
+        aarch64|arm64) arch="arm64" ;;
+        *) echo "❌ Unsupported arch: $(uname -m)" >&2; exit 1 ;;
+    esac
+    local url="https://github.com/FiloSottile/age/releases/download/v${version}/age-v${version}-linux-${arch}.tar.gz"
+    curl -fsSL "$url" | tar -xz -C /tmp
+    sudo install -m 755 /tmp/age/age /usr/local/bin/age
+    sudo install -m 755 /tmp/age/age-keygen /usr/local/bin/age-keygen
+    rm -rf /tmp/age
+}
+
 {{- if eq .chezmoi.os "darwin" }}
 
 # ── macOS ─────────────────────────────────────────────────────────────────────
@@ -99,22 +116,5 @@ fi
 {{-   end }}
 
 {{- end }}
-
-_install_age_binary() {
-    local version
-    version=$(curl -fsSL https://api.github.com/repos/FiloSottile/age/releases/latest \
-        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
-    local arch
-    case "$(uname -m)" in
-        x86_64)  arch="amd64" ;;
-        aarch64|arm64) arch="arm64" ;;
-        *) echo "❌ Unsupported arch: $(uname -m)" >&2; exit 1 ;;
-    esac
-    local url="https://github.com/FiloSottile/age/releases/download/v${version}/age-v${version}-linux-${arch}.tar.gz"
-    curl -fsSL "$url" | tar -xz -C /tmp
-    sudo install -m 755 /tmp/age/age /usr/local/bin/age
-    sudo install -m 755 /tmp/age/age-keygen /usr/local/bin/age-keygen
-    rm -rf /tmp/age
-}
 
 echo "✅ Prerequisites ready (curl / wget / gpg / age / git / git-delta)"
