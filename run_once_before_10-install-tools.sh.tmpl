@@ -258,6 +258,17 @@ else
     sudo install -m 755 /tmp/fd-*/fd /usr/local/bin/fd
     rm -rf /tmp/fd-*/ "$_tmp"
 fi
+# nvim-treesitter / Mason need a C compiler to build native parsers and some tools.
+if [ "$OS" = "darwin" ]; then
+    :
+elif has gcc; then
+    skip "C compiler (treesitter/Mason)"
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update
+    sudo apt-get install -y build-essential
+elif [ "$IS_RHEL" = "true" ]; then
+    sudo dnf install -y gcc make
+fi
 {{ end -}}
 
 # ── uv ────────────────────────────────────────────────────────────────────────

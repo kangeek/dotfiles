@@ -108,6 +108,7 @@ Install karabiner-elements (macOS only)?          (default: false)
 - Prerequisites (`curl`, `wget`, `gpg`, `age`, `git`, `git-delta`) are installed automatically before anything else
 - All tools are installed idempotently — already-installed tools are skipped
 - **RHEL/Rocky**: `epel-release` is installed automatically at the start of the run, making packages like `htop`, `ripgrep`, `fd-find`, `bat`, `fzf`, `zoxide`, `ranger`, and `age` available via `dnf`. `btop` is installed from the repo when available, otherwise from GitHub releases. If EPEL is unavailable, most tools fall back to a direct binary download; ranger prints a warning and is skipped.
+- **Neovim (Linux) + LazyVim / nvim-treesitter**: Prebuilt Neovim does not include a C compiler. Treesitter compiles language parsers from source, so Debian/Ubuntu installs get `build-essential`; RHEL-family gets `gcc` and `make`. If anything still fails, run `:checkhealth nvim-treesitter` inside Neovim and install whatever it lists (often `cmake`/`pkg-config`/`libstdc++` for unusual parsers).
 
 ---
 
