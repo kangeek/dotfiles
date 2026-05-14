@@ -35,11 +35,16 @@ _install_delta_binary() {
         https://github.com/dandavison/delta/releases/latest \
         | sed 's|.*/tag/||')
     [[ -n "$ver" ]] || { echo "❌ Could not determine delta version" >&2; exit 1; }
-    local arch
-    arch=$(uname -m)
+    # x86_64 ships musl; aarch64 ships gnu (no musl cross-build for ARM)
+    local arch target
+    case "$(uname -m)" in
+        x86_64)         arch="x86_64"; target="unknown-linux-musl" ;;
+        aarch64|arm64)  arch="aarch64"; target="unknown-linux-gnu" ;;
+        *) echo "❌ Unsupported arch: $(uname -m)" >&2; exit 1 ;;
+    esac
     local tmp
     tmp=$(mktemp /tmp/delta-XXXXXX.tar.gz)
-    curl -fsSL "https://github.com/dandavison/delta/releases/download/${ver}/delta-${ver}-${arch}-unknown-linux-musl.tar.gz" -o "$tmp"
+    curl -fsSL "https://github.com/dandavison/delta/releases/download/${ver}/delta-${ver}-${arch}-${target}.tar.gz" -o "$tmp"
     tar -xz -C /tmp -f "$tmp"
     sudo install -m 755 /tmp/delta-*/delta /usr/local/bin/delta
     rm -rf /tmp/delta-*/ "$tmp"
