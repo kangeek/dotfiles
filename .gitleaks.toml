@@ -1,0 +1,32 @@
+# gitleaks configuration for chezmoi dotfiles repository
+# Docs: https://github.com/gitleaks/gitleaks#configuration
+
+title = "chezmoi dotfiles gitleaks config"
+
+[extend]
+useDefault = true
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Global allowlist — false-positive patterns common in dotfile repos
+# ──────────────────────────────────────────────────────────────────────────────
+[allowlist]
+description = "Dotfile repo false-positive allowlist"
+
+paths = [
+  # ranger/zoxide plugin is upstream Python code
+  '''private_dot_gitignore''',
+  # gitleaks config itself
+  '''\.gitleaks\.toml''',
+]
+
+regexes = [
+  # Package mirror domains (no credentials, just URLs)
+  '''mirrors\.(ustc|tuna\.tsinghua|aliyun)\.edu\.cn''',
+  '''gems\.ruby-china\.com''',
+  '''pypi\.tuna\.tsinghua\.edu\.cn''',
+  '''goproxy\.cn''',
+  # Example / placeholder values in comments or docs
+  '''(example|sample|placeholder|your[-_]|<YOUR_)''',
+  # Typical fake tokens used in documentation
+  '''(xxxx+|1234+|abcd+|test[-_]?token|dummy|changeme)''',
+]

@@ -1,0 +1,26 @@
+# macOS metadata (auto-generated, never commit)
+**/.DS_Store
+
+# uv installer auto-generated receipt (machine-specific)
+.config/uv/uv-receipt.json
+
+# Python bytecode cache (auto-generated, never commit)
+**/__pycache__
+**/*.pyc
+**/*.pyo
+
+# Karabiner auto-generated backups (not worth syncing)
+.config/karabiner/automatic_backups
+
+# Paths managed by .chezmoiexternal.toml
+# chezmoi add / apply will ignore these directories entirely
+
+# oh-my-zsh core + custom
+.oh-my-zsh
+
+# Ranger external plugins & themes
+.config/ranger/colorschemes/dracula
+.config/ranger/plugins/zoxide
+
+# Neovim config (separate repo)
+.config/nvim

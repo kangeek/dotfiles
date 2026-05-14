@@ -1,0 +1,49 @@
+[alias]
+	co = checkout
+	st = status
+	br = branch
+	rb = rebase
+	cm = commit
+	rmt = remote -v
+	cp = cherry-pick
+[credential]
+	helper = store
+[push]
+	default = simple
+[core]
+	editor = nvim
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	dark = true
+	navigate = true # use n and N to move between diff sections
+	side-by-side = true
+	features = kang
+[merge]
+	conflictStyle = zdiff3
+[diff]
+	colorMoved = default
+[log]
+	date = format:%Y-%m-%d %H:%M:%S
+[user]
+	name = Kang Liu
+	email = liukang.hi@gmail.com
+[pull]
+	ff = only
+[pager]
+	branch = false
+[checkout]
+	defaultRemote = origin
+[rerere]
+	enabled = true
+
+[include]
+  path = ~/.gitconfig.d/themes
+[includeIf "gitdir:~/Workspace/work/"]
+  path = ~/.gitconfig.d/work
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

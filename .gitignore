@@ -1,0 +1,56 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Chezmoi source directory — sensitive file exclusions
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Secret / credential files (sourced at runtime, never committed)
+*.sec
+*.secret
+*.secrets
+*_secret
+*_secrets
+
+# Local-only overrides (machine-specific, may contain tokens)
+*.local
+*_local
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Private keys & certificates
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ecdsa
+id_ed25519
+*.pub.backup
+
+# Sensitive dotfiles that chezmoi should manage via encryption, not plain text
+# (add specific filenames here if they contain credentials)
+# private_dot_netrc
+# private_dot_aws/credentials
+
+# Python bytecode cache (auto-generated)
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+
+# Karabiner auto-generated backups (managed by the app, not worth syncing)
+dot_config/private_karabiner/private_automatic_backups/
+
+# Editor/OS noise
+.DS_Store
+**/*_dot_DS_Store
+**/.DS_Store
+*.swp
+*.swo
+*~
+.idea/
+.vscode/settings.json
+
+# chezmoi cache / run artifacts
+.chezmoi-*.json

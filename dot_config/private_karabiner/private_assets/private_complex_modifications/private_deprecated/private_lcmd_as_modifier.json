@@ -1,0 +1,16 @@
+{
+  "title": "5. Left Cmd as modifier",
+  "rules": [
+    {
+      "description": "l-cmd: m(-) u(_) h(=) j(+) i(|) /(\\)",
+      "manipulators": [
+        { "type": "basic", "from": { "key_code": "m", "modifiers": { "mandatory": [ "left_command" ] } }, "to": { "key_code": "hyphen" } },
+        { "type": "basic", "from": { "key_code": "u", "modifiers": { "mandatory": [ "left_command" ] } }, "to": { "key_code": "hyphen", "modifiers": [ "right_shift" ] } },
+        { "type": "basic", "from": { "key_code": "h", "modifiers": { "mandatory": [ "left_command" ] } }, "to": { "key_code": "equal_sign" } },
+        { "type": "basic", "from": { "key_code": "j", "modifiers": { "mandatory": [ "left_command" ] } }, "to": { "key_code": "equal_sign" , "modifiers": [ "left_shift" ] } },
+        { "type": "basic", "from": { "key_code": "i", "modifiers": { "mandatory": [ "left_command" ] } }, "to": { "key_code": "backslash", "modifiers": [ "right_shift" ] } },
+        { "type": "basic", "from": { "key_code": "slash", "modifiers": { "mandatory": [ "left_command" ] } }, "to": { "key_code": "backslash" } }
+      ]
+    }
+  ]
+}

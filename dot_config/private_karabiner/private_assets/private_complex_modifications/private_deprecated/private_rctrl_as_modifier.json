@@ -1,0 +1,16 @@
+{
+  "title": "9. Right Ctrl as modifier",
+  "rules": [
+    {
+      "description": "rctrl: s(-) x(_) f(=) j(+) b(|) /(\\)",
+      "manipulators": [
+        { "type": "basic", "from": { "key_code": "s", "modifiers": { "mandatory": [ "right_control" ] } }, "to": { "key_code": "hyphen" } },
+        { "type": "basic", "from": { "key_code": "x", "modifiers": { "mandatory": [ "right_control" ] } }, "to": { "key_code": "hyphen", "modifiers": [ "right_shift" ] } },
+        { "type": "basic", "from": { "key_code": "f", "modifiers": { "mandatory": [ "right_control" ] } }, "to": { "key_code": "equal_sign" } },
+        { "type": "basic", "from": { "key_code": "j", "modifiers": { "mandatory": [ "right_control" ] } }, "to": { "key_code": "equal_sign" , "modifiers": [ "left_shift" ] } },
+        { "type": "basic", "from": { "key_code": "b", "modifiers": { "mandatory": [ "right_control" ] } }, "to": { "key_code": "backslash", "modifiers": [ "right_shift" ] } },
+        { "type": "basic", "from": { "key_code": "slash", "modifiers": { "mandatory": [ "right_control" ] } }, "to": { "key_code": "backslash" } }
+      ]
+    }
+  ]
+}

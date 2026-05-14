@@ -1,0 +1,17 @@
+# global tool versions go here
+# you can set these with `mise use -g`
+[tools]
+# go = "latest"
+# jsonnet-bundler = "latest"
+
+# https://mise.jdx.dev/configuration/settings.html
+[settings]
+env_file = ".env" # automatically load .env files in any directory
+plugin_autoupdate_last_check_duration = '1 day' # how long to wait before updating plugins automatically.
+trusted_config_paths = [
+  '/Users/kang',
+  '/home/kang',
+] # trusted paths for config files
+idiomatic_version_file_enable_tools = ["node"]
+experimental = true
+

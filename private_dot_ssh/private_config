@@ -1,0 +1,52 @@
+Include ~/.orbstack/ssh/config
+
+Host mac
+    HostName mac.local
+
+Host lab
+    HostName 36.139.170.12
+    Port 22222
+#   ServerAliveInterval 60
+#   ServerAliveCountMax 10
+#   ConnectTimeout 60
+
+Host *.jump.kang.zone jump.kang.zone
+    UserKnownHostsFile /Users/kang/.tsh/known_hosts
+    IdentityFile "/Users/kang/.tsh/keys/jump.kang.zone/kang"
+    CertificateFile "/Users/kang/.tsh/keys/jump.kang.zone/kang-ssh/jump.kang.zone-cert.pub"
+    ControlMaster no
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
+
+# Flags for all jump.kang.zone hosts except the proxy
+Host *.jump.kang.zone !jump.kang.zone
+    Port 3022
+    ProxyCommand "/opt/homebrew/bin/tsh" proxy ssh --cluster=jump.kang.zone --proxy=jump.kang.zone:8443 %r@%h:%p
+
+Host ott-jump
+  Hostname 192.168.32.93
+  User a-kang.liu
+  ControlPath ~/.ssh/control-master-%C
+  ControlMaster auto
+  ControlPersist 600m
+
+Host manual-station
+  HostName 18.138.249.177
+  Port 10022
+  User ec2-user
+  IdentityFile ~/Workspace/work/cmp-all/.ssh/manual_station
+  ServerAliveInterval 30
+  ServerAliveCountMax 3
+  TCPKeepAlive yes
+
+Host *
+    SetEnv LC_ALL=C.UTF-8
+    SetEnv LANG=C.UTF-8
+    ForwardAgent yes
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    TCPKeepAlive yes
+    LogLevel QUIET
+    PubkeyAcceptedKeyTypes +ssh-rsa

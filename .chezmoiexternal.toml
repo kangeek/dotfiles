@@ -1,0 +1,75 @@
+# chezmoi external repos
+# Docs: https://www.chezmoi.io/reference/special-files/chezmoiexternal-format/
+#
+# On `chezmoi apply` / `chezmoi update`:
+#   - first time : git clone
+#   - subsequent : git pull (respects refreshPeriod)
+
+# ──────────────────────────────────────────────────────────────────────────────
+# oh-my-zsh — core
+# ──────────────────────────────────────────────────────────────────────────────
+[".oh-my-zsh"]
+  type          = "git-repo"
+  url           = "https://github.com/ohmyzsh/ohmyzsh.git"
+  refreshPeriod = "168h"   # pull at most once per week
+  [".oh-my-zsh".clone]
+    args = ["--depth", "1"]  # shallow clone keeps it fast
+
+# ──────────────────────────────────────────────────────────────────────────────
+# oh-my-zsh custom plugins (third-party, read-only follow upstream)
+# ──────────────────────────────────────────────────────────────────────────────
+[".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+  type          = "git-repo"
+  url           = "https://github.com/zsh-users/zsh-autosuggestions.git"
+  refreshPeriod = "168h"
+  [".oh-my-zsh/custom/plugins/zsh-autosuggestions".clone]
+    args = ["--depth", "1"]
+
+[".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+  type          = "git-repo"
+  url           = "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+  refreshPeriod = "168h"
+  [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting".clone]
+    args = ["--depth", "1"]
+
+[".oh-my-zsh/custom/plugins/zsh-fzf-history-search"]
+  type          = "git-repo"
+  url           = "https://github.com/joshskidmore/zsh-fzf-history-search.git"
+  refreshPeriod = "168h"
+  [".oh-my-zsh/custom/plugins/zsh-fzf-history-search".clone]
+    args = ["--depth", "1"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# oh-my-zsh custom themes
+# ──────────────────────────────────────────────────────────────────────────────
+[".oh-my-zsh/custom/themes/powerlevel10k"]
+  type          = "git-repo"
+  url           = "https://github.com/romkatv/powerlevel10k.git"
+  refreshPeriod = "168h"
+  [".oh-my-zsh/custom/themes/powerlevel10k".clone]
+    args = ["--depth", "1"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Ranger plugins & themes (third-party, read-only follow upstream)
+# ──────────────────────────────────────────────────────────────────────────────
+[".config/ranger/colorschemes/dracula"]
+  type          = "git-repo"
+  url           = "https://github.com/dracula/ranger.git"
+  refreshPeriod = "168h"
+  [".config/ranger/colorschemes/dracula".clone]
+    args = ["--depth", "1"]
+
+[".config/ranger/plugins/zoxide"]
+  type          = "git-repo"
+  url           = "https://github.com/jchook/ranger-zoxide.git"
+  refreshPeriod = "168h"
+  [".config/ranger/plugins/zoxide".clone]
+    args = ["--depth", "1"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Neovim config — your own repo (full clone, can push from ~/.config/nvim)
+# ──────────────────────────────────────────────────────────────────────────────
+[".config/nvim"]
+  type          = "git-repo"
+  url           = "git@github.com:kangeek/nvim.git"
+  refreshPeriod = "168h"

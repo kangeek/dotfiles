@@ -1,0 +1,71 @@
+{
+  "title": "Applications specific rules",
+  "rules": [
+    {
+      "description": "Switch left command and control when WoW is running",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "left_command" },
+          "to": [ { "key_code": "left_control" } ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": [ "^com\\.blizzard\\.worldofwarcraft.*" ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "left_control" },
+          "to": [ { "key_code": "left_command" } ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": [ "^com\\.blizzard\\.worldofwarcraft.*" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Terminal specific keymappings",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "left_arrow", "modifiers": { "mandatory": [ "command" ] } },
+          "to": [ { "key_code": "a", "modifiers": [ "left_control" ] } ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": [ "^com\\.github\\.wez\\.wezterm.*", "^com\\.apple\\.Terminal.*" ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "right_arrow", "modifiers": { "mandatory": [ "command" ] } },
+          "to": [ { "key_code": "e", "modifiers": [ "left_control" ] } ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": [ "^com\\.github\\.wez\\.wezterm.*", "^com\\.apple\\.Terminal.*" ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "delete_or_backspace", "modifiers": { "mandatory": [ "command" ] } },
+          "to": [ { "key_code": "u", "modifiers": [ "left_control" ] } ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": [ "^com\\.github\\.wez\\.wezterm.*", "^com\\.apple\\.Terminal.*" ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
