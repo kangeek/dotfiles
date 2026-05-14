@@ -1,0 +1,305 @@
+#!/bin/bash
+# Install selected tools. Idempotent — skips tools that are already installed.
+# To install a previously skipped tool:
+#   1. Edit ~/.config/chezmoi/chezmoi.toml and set the tool's flag to true
+#   2. Run: chezmoi apply
+set -euo pipefail
+
+# ── Detect OS / package manager ───────────────────────────────────────────────
+OS="{{ .chezmoi.os }}"
+{{- if eq .chezmoi.os "linux" }}
+{{-   $id     := .chezmoi.osRelease.id | default "" }}
+{{-   $idLike := get .chezmoi.osRelease "id_like" | default "" }}
+{{-   $isDebian := or (eq $id "debian") (eq $id "ubuntu") (contains "debian" $idLike) (contains "ubuntu" $idLike) }}
+{{-   $isRhel   := or (eq $id "fedora") (eq $id "rhel") (eq $id "centos") (eq $id "rocky") (eq $id "almalinux") (contains "rhel" $idLike) (contains "fedora" $idLike) }}
+IS_DEBIAN={{ $isDebian }}
+IS_RHEL={{ $isRhel }}
+{{- else }}
+IS_DEBIAN=false
+IS_RHEL=false
+{{- end }}
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+has() { command -v "$1" &>/dev/null; }
+skip() { echo "✅ $1 already installed — skipping"; }
+
+pkg_install() {
+    # Usage: pkg_install <brew-pkg> <apt-pkg> <dnf-pkg>
+    local brew_pkg="$1" apt_pkg="$2" dnf_pkg="$3"
+    if [ "$OS" = "darwin" ]; then
+        brew install "$brew_pkg"
+    elif [ "$IS_DEBIAN" = "true" ]; then
+        sudo apt-get install -y "$apt_pkg"
+    elif [ "$IS_RHEL" = "true" ]; then
+        sudo dnf install -y "$dnf_pkg"
+    fi
+}
+
+# Update package index once
+_pkg_updated=false
+pkg_update() {
+    if [ "$_pkg_updated" = "false" ]; then
+        if [ "$IS_DEBIAN" = "true" ]; then sudo apt-get update -qq; fi
+        _pkg_updated=true
+    fi
+}
+
+# ── curl + wget ───────────────────────────────────────────────────────────────
+{{ if .installCurl -}}
+echo "── curl + wget ──"
+has curl && skip curl || { pkg_update; pkg_install curl curl curl; }
+has wget && skip wget || { pkg_update; pkg_install wget wget wget; }
+{{ end -}}
+
+# ── Network tools (ping / dig / nslookup / netstat) ──────────────────────────
+{{ if .installNetworkTools -}}
+echo "── Network tools ──"
+if [ "$OS" = "darwin" ]; then
+    # macOS ships these by default; bind-tools via brew for dig
+    has dig || brew install bind
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update
+    # iputils-ping → ping, dnsutils → dig/nslookup, net-tools → netstat
+    sudo apt-get install -y iputils-ping dnsutils net-tools
+elif [ "$IS_RHEL" = "true" ]; then
+    sudo dnf install -y iputils bind-utils net-tools
+fi
+{{ end -}}
+
+# ── git + git-delta ───────────────────────────────────────────────────────────
+{{ if .installGit -}}
+echo "── git + git-delta ──"
+has git && skip git || { pkg_update; pkg_install git git git; }
+if has delta; then
+    skip git-delta
+else
+    if [ "$OS" = "darwin" ]; then
+        brew install git-delta
+    elif [ "$IS_DEBIAN" = "true" ]; then
+        # delta is not in apt; install via cargo or binary
+        _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
+        _arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+        curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/git-delta_${_ver#v}_${_arch}.deb" -o /tmp/git-delta.deb
+        sudo dpkg -i /tmp/git-delta.deb && rm /tmp/git-delta.deb
+    elif [ "$IS_RHEL" = "true" ]; then
+        _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
+        _arch=$(uname -m)
+        curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/delta-${_ver#v}-${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
+        sudo install -m 755 /tmp/delta-*/delta /usr/local/bin/delta
+    fi
+fi
+{{ end -}}
+
+# ── zsh + oh-my-zsh + p10k ────────────────────────────────────────────────────
+{{ if .installZsh -}}
+echo "── zsh ──"
+has zsh && skip zsh || { pkg_update; pkg_install zsh zsh zsh; }
+if [ -d "$HOME/.oh-my-zsh" ]; then
+    skip oh-my-zsh
+else
+    echo "📦 Installing oh-my-zsh..."
+    RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
+{{ end -}}
+
+# ── mise ──────────────────────────────────────────────────────────────────────
+{{ if .installMise -}}
+echo "── mise ──"
+if has mise; then
+    skip mise
+else
+    curl -fsSL https://mise.run | sh
+    echo "💡 Add mise to your PATH: eval \"\$(~/.local/bin/mise activate zsh)\""
+fi
+{{ end -}}
+
+# ── tmux ──────────────────────────────────────────────────────────────────────
+{{ if .installTmux -}}
+echo "── tmux ──"
+has tmux && skip tmux || { pkg_update; pkg_install tmux tmux tmux; }
+{{ end -}}
+
+# ── fzf ───────────────────────────────────────────────────────────────────────
+{{ if .installFzf -}}
+echo "── fzf ──"
+if has fzf; then
+    skip fzf
+elif [ "$OS" = "darwin" ]; then
+    brew install fzf
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update && sudo apt-get install -y fzf
+elif [ "$IS_RHEL" = "true" ]; then
+    sudo dnf install -y fzf 2>/dev/null || {
+        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all --no-update-rc
+    }
+fi
+{{ end -}}
+
+# ── zoxide ────────────────────────────────────────────────────────────────────
+{{ if .installZoxide -}}
+echo "── zoxide ──"
+if has zoxide; then
+    skip zoxide
+else
+    curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+fi
+{{ end -}}
+
+# ── bat ───────────────────────────────────────────────────────────────────────
+{{ if .installBat -}}
+echo "── bat ──"
+if has bat || has batcat; then
+    skip bat
+elif [ "$OS" = "darwin" ]; then
+    brew install bat
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update && sudo apt-get install -y bat
+elif [ "$IS_RHEL" = "true" ]; then
+    sudo dnf install -y bat 2>/dev/null || {
+        _ver=$(curl -fsSL https://api.github.com/repos/sharkdp/bat/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+        _arch=$(uname -m)
+        curl -fsSL "https://github.com/sharkdp/bat/releases/download/v${_ver}/bat-v${_ver}-${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
+        sudo install -m 755 /tmp/bat-*/bat /usr/local/bin/bat
+    }
+fi
+{{ end -}}
+
+# ── htop ──────────────────────────────────────────────────────────────────────
+{{ if .installHtop -}}
+echo "── htop ──"
+has htop && skip htop || { pkg_update; pkg_install htop htop htop; }
+{{ end -}}
+
+# ── eza ───────────────────────────────────────────────────────────────────────
+{{ if .installEza -}}
+echo "── eza ──"
+if has eza; then
+    skip eza
+elif [ "$OS" = "darwin" ]; then
+    brew install eza
+elif [ "$IS_DEBIAN" = "true" ]; then
+    # eza requires Rust or a PPA on older Debian/Ubuntu
+    sudo mkdir -p /etc/apt/keyrings
+    wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc \
+        | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" \
+        | sudo tee /etc/apt/sources.list.d/gierens.list
+    sudo apt-get update -qq && sudo apt-get install -y eza
+elif [ "$IS_RHEL" = "true" ]; then
+    sudo dnf install -y eza 2>/dev/null || {
+        _ver=$(curl -fsSL https://api.github.com/repos/eza-community/eza/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+        _arch=$(uname -m)
+        curl -fsSL "https://github.com/eza-community/eza/releases/download/v${_ver}/eza_${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
+        sudo install -m 755 /tmp/eza /usr/local/bin/eza
+    }
+fi
+{{ end -}}
+
+# ── lazygit ───────────────────────────────────────────────────────────────────
+{{ if .installLazygit -}}
+echo "── lazygit ──"
+if has lazygit; then
+    skip lazygit
+elif [ "$OS" = "darwin" ]; then
+    brew install lazygit
+else
+    _ver=$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+    _arch=$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/arm64/')
+    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${_ver}/lazygit_${_ver}_Linux_${_arch}.tar.gz" | tar -xz -C /tmp
+    sudo install -m 755 /tmp/lazygit /usr/local/bin/lazygit
+fi
+{{ end -}}
+
+# ── neovim + ripgrep + fd-find ────────────────────────────────────────────────
+{{ if .installNeovim -}}
+echo "── neovim + ripgrep + fd ──"
+if has nvim; then
+    skip neovim
+elif [ "$OS" = "darwin" ]; then
+    brew install neovim
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update && sudo apt-get install -y neovim
+elif [ "$IS_RHEL" = "true" ]; then
+    sudo dnf install -y neovim 2>/dev/null || {
+        curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
+            | sudo tar -xz -C /opt
+        sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+    }
+fi
+if has rg; then
+    skip ripgrep
+elif [ "$OS" = "darwin" ]; then
+    brew install ripgrep
+else
+    pkg_update; pkg_install ripgrep ripgrep ripgrep
+fi
+if has fd || has fdfind; then
+    skip fd-find
+elif [ "$OS" = "darwin" ]; then
+    brew install fd
+elif [ "$IS_DEBIAN" = "true" ]; then
+    pkg_update && sudo apt-get install -y fd-find
+elif [ "$IS_RHEL" = "true" ]; then
+    sudo dnf install -y fd-find 2>/dev/null || sudo dnf install -y fd
+fi
+{{ end -}}
+
+# ── ranger ────────────────────────────────────────────────────────────────────
+{{ if .installRanger -}}
+echo "── ranger ──"
+has ranger && skip ranger || { pkg_update; pkg_install ranger ranger ranger; }
+{{ end -}}
+
+# ── uv ────────────────────────────────────────────────────────────────────────
+{{ if .installUv -}}
+echo "── uv ──"
+if has uv; then
+    skip uv
+else
+    curl -fsSL https://astral.sh/uv/install.sh | sh
+fi
+{{ end -}}
+
+# ── sops ──────────────────────────────────────────────────────────────────────
+{{ if .installSops -}}
+echo "── sops ──"
+if has sops; then
+    skip sops
+elif [ "$OS" = "darwin" ]; then
+    brew install sops
+else
+    _ver=$(curl -fsSL https://api.github.com/repos/getsops/sops/releases/latest | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+    _arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+    if [ "$IS_DEBIAN" = "true" ]; then
+        curl -fsSL "https://github.com/getsops/sops/releases/download/v${_ver}/sops_${_ver}_${_arch}.deb" -o /tmp/sops.deb
+        sudo dpkg -i /tmp/sops.deb && rm /tmp/sops.deb
+    else
+        curl -fsSL "https://github.com/getsops/sops/releases/download/v${_ver}/sops-v${_ver}.linux.${_arch}" \
+            -o /tmp/sops
+        sudo install -m 755 /tmp/sops /usr/local/bin/sops && rm /tmp/sops
+    fi
+fi
+{{ end -}}
+
+# ── wezterm (macOS only) ──────────────────────────────────────────────────────
+{{ if and .installWezterm (eq .chezmoi.os "darwin") -}}
+echo "── wezterm ──"
+if has wezterm || [ -d "/Applications/WezTerm.app" ]; then
+    skip wezterm
+else
+    brew install --cask wezterm
+fi
+{{ end -}}
+
+# ── karabiner-elements (macOS only) ──────────────────────────────────────────
+{{ if and .installKarabiner (eq .chezmoi.os "darwin") -}}
+echo "── karabiner-elements ──"
+if [ -d "/Applications/Karabiner-Elements.app" ]; then
+    skip karabiner-elements
+else
+    brew install --cask karabiner-elements
+fi
+{{ end -}}
+
+echo ""
+echo "✅ Tool installation complete."

@@ -1,0 +1,63 @@
+{{/* ────────────────────────────────────────────────────────────────────────
+     Age encryption
+     ──────────────────────────────────────────────────────────────────────── */}}
+{{- $ageKeyFile := joinPath .chezmoi.homeDir ".config/chezmoi/key.txt" -}}
+{{- $hasKey     := stat $ageKeyFile -}}
+{{- $ageIdentity := "" -}}
+{{- if not $hasKey -}}
+{{-   $ageIdentity = promptStringOnce . "ageIdentity" "Age private key (AGE-SECRET-KEY-1..., leave empty to skip — encrypted files will not sync)" -}}
+{{- end -}}
+
+{{- if or $hasKey (ne $ageIdentity "") }}
+[age]
+    identity  = "~/.config/chezmoi/key.txt"
+    recipient = "age1v8qcrm9f47g3nwjfxxcm5hc78a3xnpp6szf6cy9vrwfkzrefapfqa0krlv"
+{{ end -}}
+
+{{/* ────────────────────────────────────────────────────────────────────────
+     Tool selection
+     Answers are stored in chezmoi.toml[data] and used by:
+       - run_once_before_10-install-tools.sh.tmpl  (install)
+       - .chezmoiignore.tmpl                        (skip unselected configs)
+     To install a previously skipped tool: edit chezmoi.toml and add it to
+     the relevant bool below, then run: chezmoi apply
+     ──────────────────────────────────────────────────────────────────────── */}}
+{{- $installCurl        := promptBoolOnce . "installCurl"        "Install curl + wget"                              true  -}}
+{{- $installNetworkTools := promptBoolOnce . "installNetworkTools" "Install network tools (ping/dig/nslookup/netstat)" true  -}}
+{{- $installGit         := promptBoolOnce . "installGit"         "Install git + git-delta"                          true  -}}
+{{- $installZsh         := promptBoolOnce . "installZsh"         "Install zsh + oh-my-zsh + p10k"                   true  -}}
+{{- $installMise        := promptBoolOnce . "installMise"        "Install mise (tool version manager)"              true  -}}
+{{- $installTmux        := promptBoolOnce . "installTmux"        "Install tmux"                                     true  -}}
+{{- $installFzf         := promptBoolOnce . "installFzf"         "Install fzf"                                      true  -}}
+{{- $installZoxide      := promptBoolOnce . "installZoxide"      "Install zoxide"                                   true  -}}
+{{- $installBat         := promptBoolOnce . "installBat"         "Install bat"                                      true  -}}
+{{- $installHtop        := promptBoolOnce . "installHtop"        "Install htop"                                     true  -}}
+{{- $installEza         := promptBoolOnce . "installEza"         "Install eza"                                      true  -}}
+{{- $installLazygit     := promptBoolOnce . "installLazygit"     "Install lazygit"                                  false -}}
+{{- $installNeovim      := promptBoolOnce . "installNeovim"      "Install neovim + ripgrep + fd-find"               false -}}
+{{- $installRanger      := promptBoolOnce . "installRanger"      "Install ranger"                                   false -}}
+{{- $installUv          := promptBoolOnce . "installUv"          "Install uv (Python package manager)"              false -}}
+{{- $installSops        := promptBoolOnce . "installSops"        "Install sops"                                     false -}}
+{{- $installWezterm     := promptBoolOnce . "installWezterm"     "Install wezterm (macOS only)"                     false -}}
+{{- $installKarabiner   := promptBoolOnce . "installKarabiner"   "Install karabiner-elements (macOS only)"          false -}}
+
+[data]
+    ageIdentity        = {{ $ageIdentity        | quote }}
+    installCurl        = {{ $installCurl }}
+    installNetworkTools = {{ $installNetworkTools }}
+    installGit         = {{ $installGit }}
+    installZsh         = {{ $installZsh }}
+    installMise        = {{ $installMise }}
+    installTmux        = {{ $installTmux }}
+    installFzf         = {{ $installFzf }}
+    installZoxide      = {{ $installZoxide }}
+    installBat         = {{ $installBat }}
+    installHtop        = {{ $installHtop }}
+    installEza         = {{ $installEza }}
+    installLazygit     = {{ $installLazygit }}
+    installNeovim      = {{ $installNeovim }}
+    installRanger      = {{ $installRanger }}
+    installUv          = {{ $installUv }}
+    installSops        = {{ $installSops }}
+    installWezterm     = {{ $installWezterm }}
+    installKarabiner   = {{ $installKarabiner }}

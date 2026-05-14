@@ -63,36 +63,45 @@ Files prefixed `private_` are installed with `600` permissions.
 
 ## New machine setup
 
-### 1. Install prerequisites
+### 1. Install chezmoi
 
 ```bash
-# chezmoi
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin
-
-# age (for decrypting secrets)
-brew install age          # macOS
-sudo apt install age      # Debian / Ubuntu
 ```
 
-### 2. Copy chezmoi config and age key from an existing machine
-
-The age private key and `chezmoi.toml` are **never stored in this repository**.  
-Copy them directly from an existing machine:
+### 2. Initialize and apply
 
 ```bash
-mkdir -p ~/.config/chezmoi
-scp old-machine:~/.config/chezmoi/{chezmoi.toml,key.txt} ~/.config/chezmoi/
-chmod 600 ~/.config/chezmoi/key.txt
+chezmoi init --apply kangeek
 ```
 
-### 3. Initialize and apply
+The init process will prompt you interactively:
 
-```bash
-chezmoi init --apply git@github.com:<you>/dotfiles.git
+```
+Age private key (AGE-SECRET-KEY-1..., leave empty to skip — encrypted files will not sync):
+
+Install curl + wget? [Y/n]:
+Install network tools (ping/dig/nslookup/netstat)? [Y/n]:
+Install git + git-delta? [Y/n]:
+Install zsh + oh-my-zsh + p10k? [Y/n]:
+Install mise (tool version manager)? [Y/n]:
+Install tmux? [Y/n]:
+Install fzf? [Y/n]:
+Install zoxide? [Y/n]:
+Install bat? [Y/n]:
+Install htop? [Y/n]:
+Install eza? [Y/n]:
+Install lazygit? [y/N]:
+Install neovim + ripgrep + fd-find? [y/N]:
+Install ranger? [y/N]:
+Install uv (Python package manager)? [y/N]:
+Install sops? [y/N]:
 ```
 
-This clones the repo, pulls all external repos, decrypts all `.age` files, and
-installs everything into `$HOME` in one step.
+- **Age key**: paste your `AGE-SECRET-KEY-1...` private key for full encryption support, or leave empty to skip
+- **Tools**: `Y/n` = recommended, `y/N` = optional. Press Enter to accept the default
+- `age` is installed automatically before the key is written
+- All tools are installed idempotently — already-installed tools are skipped
 
 ---
 
@@ -103,45 +112,56 @@ installs everything into `$HOME` in one step.
 ### Edit a managed file
 
 ```bash
-df edit ~/.zshrc
-df edit ~/.gitconfig
-df edit ~/.zshenv.sec   # encrypted: opens decrypted, saves re-encrypted
+chezmoi edit ~/.zshrc
+chezmoi edit ~/.gitconfig
+chezmoi edit ~/.zshenv.sec   # encrypted: opens decrypted, saves re-encrypted
 ```
 
 ### Apply pending changes (source → home)
 
 ```bash
-df diff    # preview what would change
-df apply
+chezmoi diff    # preview what would change
+chezmoi apply
 ```
 
 ### Pull upstream changes and apply
 
 ```bash
-df update  # git pull + pull all external repos + apply
+chezmoi update  # git pull + pull all external repos + apply
 ```
 
 ### Add a new file
 
 ```bash
-df add ~/.config/some-tool/config          # plain file
-df add --encrypt ~/.some-secret-file       # encrypted
+chezmoi add ~/.config/some-tool/config          # plain file
+chezmoi add --encrypt ~/.some-secret-file       # encrypted
+```
+
+### Install a previously skipped tool
+
+```bash
+# Edit your local chezmoi config and flip the flag to true
+vim ~/.config/chezmoi/chezmoi.toml
+
+# Apply — chezmoi detects the install script content changed and re-runs it
+# Already-installed tools are skipped automatically
+df apply
 ```
 
 ### Check status
 
 ```bash
-df status    # files that differ between source and home
-df managed   # list all managed files
-df doctor    # verify chezmoi environment and config
+chezmoi status    # files that differ between source and home
+chezmoi managed   # list all managed files
+chezmoi doctor    # verify chezmoi environment and config
 ```
 
 ### Commit and push
 
 ```bash
-df git add -- .
-df git commit -- -m "your message"
-df git push
+chezmoi git add -- .
+chezmoi git commit -- -m "your message"
+chezmoi git push
 ```
 
 ---

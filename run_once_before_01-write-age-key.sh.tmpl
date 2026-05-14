@@ -1,0 +1,11 @@
+#!/bin/bash
+# Write age private key to key.txt if it was provided during init.
+# This script runs once (keyed by its content hash).
+{{ if and (not (stat (joinPath .chezmoi.homeDir ".config/chezmoi/key.txt"))) (ne (index . "ageIdentity" | default "") "") -}}
+mkdir -p {{ joinPath .chezmoi.homeDir ".config/chezmoi" | quote }}
+printf '%s\n' {{ .ageIdentity | quote }} > {{ joinPath .chezmoi.homeDir ".config/chezmoi/key.txt" | quote }}
+chmod 600 {{ joinPath .chezmoi.homeDir ".config/chezmoi/key.txt" | quote }}
+echo "✅ Age key written to ~/.config/chezmoi/key.txt"
+{{- else }}
+: # key.txt already exists or no key provided — nothing to do
+{{- end }}
