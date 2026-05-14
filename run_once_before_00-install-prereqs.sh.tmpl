@@ -10,9 +10,10 @@ set -euo pipefail
 
 _install_age_binary() {
     local version
-    version=$(curl -fsSL https://api.github.com/repos/FiloSottile/age/releases/latest \
-        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
-    [[ -n "$version" ]] || { echo "❌ Could not determine age version from GitHub API" >&2; exit 1; }
+    version=$(curl -fsSLI -o /dev/null -w '%{url_effective}' \
+        https://github.com/FiloSottile/age/releases/latest \
+        | sed 's|.*/tag/v||')
+    [[ -n "$version" ]] || { echo "❌ Could not determine age version" >&2; exit 1; }
     local arch
     case "$(uname -m)" in
         x86_64)  arch="amd64" ;;
@@ -30,9 +31,10 @@ _install_age_binary() {
 
 _install_delta_binary() {
     local ver
-    ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest \
-        | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
-    [[ -n "$ver" ]] || { echo "❌ Could not determine delta version from GitHub API" >&2; exit 1; }
+    ver=$(curl -fsSLI -o /dev/null -w '%{url_effective}' \
+        https://github.com/dandavison/delta/releases/latest \
+        | sed 's|.*/tag/||')
+    [[ -n "$ver" ]] || { echo "❌ Could not determine delta version" >&2; exit 1; }
     local arch
     arch=$(uname -m)
     local tmp
