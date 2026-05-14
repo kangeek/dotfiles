@@ -47,10 +47,8 @@
 .config/bat
 .config/ranger
 {{ end -}}
-{{ if not .installHtop -}}
+{{ if not .installTopTools -}}
 .config/htop
-{{ end -}}
-{{ if not .installBtop -}}
 .config/btop
 {{ end -}}
 {{ if not .installNeovim -}}

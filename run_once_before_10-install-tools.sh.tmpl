@@ -148,15 +148,10 @@ fi
 
 {{ end -}}
 
-# ── htop ──────────────────────────────────────────────────────────────────────
-{{ if .installHtop -}}
-echo "── htop ──"
+# ── top tools (htop + btop) ───────────────────────────────────────────────────
+{{ if .installTopTools -}}
+echo "── top tools ──"
 has htop && skip htop || { pkg_update; pkg_install htop htop htop; }
-{{ end -}}
-
-# ── btop ──────────────────────────────────────────────────────────────────────
-{{ if .installBtop -}}
-echo "── btop ──"
 if has btop; then
     skip btop
 elif [ "$OS" = "darwin" ]; then
