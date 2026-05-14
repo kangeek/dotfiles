@@ -12,17 +12,35 @@ _install_age_binary() {
     local version
     version=$(curl -fsSL https://api.github.com/repos/FiloSottile/age/releases/latest \
         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+    [[ -n "$version" ]] || { echo "❌ Could not determine age version from GitHub API" >&2; exit 1; }
     local arch
     case "$(uname -m)" in
         x86_64)  arch="amd64" ;;
         aarch64|arm64) arch="arm64" ;;
         *) echo "❌ Unsupported arch: $(uname -m)" >&2; exit 1 ;;
     esac
-    local url="https://github.com/FiloSottile/age/releases/download/v${version}/age-v${version}-linux-${arch}.tar.gz"
-    curl -fsSL "$url" | tar -xz -C /tmp
+    local tmp
+    tmp=$(mktemp /tmp/age-XXXXXX.tar.gz)
+    curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${version}/age-v${version}-linux-${arch}.tar.gz" -o "$tmp"
+    tar -xz -C /tmp -f "$tmp"
     sudo install -m 755 /tmp/age/age /usr/local/bin/age
     sudo install -m 755 /tmp/age/age-keygen /usr/local/bin/age-keygen
-    rm -rf /tmp/age
+    rm -rf /tmp/age "$tmp"
+}
+
+_install_delta_binary() {
+    local ver
+    ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest \
+        | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
+    [[ -n "$ver" ]] || { echo "❌ Could not determine delta version from GitHub API" >&2; exit 1; }
+    local arch
+    arch=$(uname -m)
+    local tmp
+    tmp=$(mktemp /tmp/delta-XXXXXX.tar.gz)
+    curl -fsSL "https://github.com/dandavison/delta/releases/download/${ver}/delta-${ver}-${arch}-unknown-linux-musl.tar.gz" -o "$tmp"
+    tar -xz -C /tmp -f "$tmp"
+    sudo install -m 755 /tmp/delta-*/delta /usr/local/bin/delta
+    rm -rf /tmp/delta-*/ "$tmp"
 }
 
 {{- if eq .chezmoi.os "darwin" }}
@@ -75,10 +93,11 @@ fi
 
 if ! command -v delta &>/dev/null; then
     echo "📦 Installing git-delta..."
-    _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
-    _arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
-    curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/git-delta_${_ver#v}_${_arch}.deb" -o /tmp/git-delta.deb
-    sudo dpkg -i /tmp/git-delta.deb && rm /tmp/git-delta.deb
+    if apt-cache show git-delta &>/dev/null 2>&1; then
+        sudo apt-get install -y git-delta
+    else
+        _install_delta_binary
+    fi
 fi
 
 {{-   else if $isRhel }}
@@ -102,10 +121,11 @@ fi
 
 if ! command -v delta &>/dev/null; then
     echo "📦 Installing git-delta..."
-    _ver=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed 's/.*"\([^"]*\)".*/\1/')
-    _arch=$(uname -m)
-    curl -fsSL "https://github.com/dandavison/delta/releases/download/${_ver}/delta-${_ver#v}-${_arch}-unknown-linux-musl.tar.gz" | tar -xz -C /tmp
-    sudo install -m 755 /tmp/delta-*/delta /usr/local/bin/delta
+    if dnf list git-delta &>/dev/null 2>&1; then
+        sudo dnf install -y git-delta
+    else
+        _install_delta_binary
+    fi
 fi
 
 {{-   else }}
