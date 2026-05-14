@@ -292,7 +292,9 @@ handle_mime() {
         ## Text
         text/* | */xml)
             ## Syntax highlight
-            if [[ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
+            ## Portable byte size (avoid GNU stat --printf vs BSD stat -f when PATH differs).
+            FILESIZE="$(wc -c <"${FILE_PATH}" | tr -d '[:space:]')"
+            if [[ "${FILESIZE}" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
                 exit 2
             fi
             if [[ "$( tput colors )" -ge 256 ]]; then

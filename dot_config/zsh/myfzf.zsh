@@ -11,6 +11,10 @@ export FZF_DEFAULT_OPTS=" \
   --multi \
   --bind 'ctrl-/:change-preview-window(down|hidden|),ctrl-y:preview-up,ctrl-e:preview-down,ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down'"
 
+# Ctrl-T / Alt-C widgets do not use _fzf_comprun; set previews explicitly.
+export FZF_CTRL_T_OPTS="--preview-window right:55%,border-rounded --preview '[[ -f {} ]] && { bat --style=numbers --color=always -- {} 2>/dev/null || LC_ALL=C sed -n \"1,200p\" -- {}; }'"
+export FZF_ALT_C_OPTS="--preview-window right:55%,border-rounded --preview 'eza --tree --color=always --icons=always {} | head -200'"
+
 # Use fd (https://github.com/sharkdp/fd) for listing path candidates.
 # - The first argument to the function ($1) is the base path to start traversal
 # - See the source code (completion.{bash,zsh}) for the details.
@@ -29,9 +33,9 @@ _fzf_comprun() {
   shift
 
   case "$command" in
-    cd)           fzf --preview 'eza --tree --color=always --icons=always {} | head -200' "$@" ;;
+    cd)           fzf --preview-window 'right:55%,border-rounded' --preview 'eza --tree --color=always --icons=always {} | head -200' "$@" ;;
     export|unset) fzf --preview "eval 'echo \$'{}" "$@" ;;
     ssh)          fzf --preview 'dig @8.8.8.8 {}' "$@" ;;
-    *)            fzf --preview 'bat -n --color=always {}'  "$@" ;;
+    *)            fzf --preview-window 'right:55%,border-rounded' --preview '[[ -f {} ]] && { bat --style=numbers --color=always -- {} 2>/dev/null || LC_ALL=C sed -n "1,200p" -- {}; }' "$@" ;;
   esac
 }

@@ -20,12 +20,13 @@ Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 | `~/.pip/pip.conf` | pip mirror config (legacy path) |
 | `~/.config/bat/` | bat syntax highlighter + Catppuccin themes |
 | `~/.config/htop/` | htop config |
+| `~/.config/btop/` | btop config + Catppuccin Macchiato theme (vim keybindings enabled) |
 | `~/.config/karabiner/` | Karabiner-Elements key remapping (macOS only) |
 | `~/.config/lazygit/` | Lazygit config |
 | `~/.config/mise/` | mise (tool version manager) config |
 | `~/.config/pip/` | pip mirror config |
 | `~/.config/pnpm/` | pnpm config |
-| `~/.config/ranger/` | Ranger file manager (config, commands, colorscheme) |
+| `~/.config/ranger/` | Ranger file manager (Catppuccin Macchiato colorscheme, preview script, zoxide plugin) |
 | `~/.config/tmux/` | Tmux config + custom status modules |
 | `~/.config/uv/` | uv Python package manager config |
 | `~/.config/wezterm/` | WezTerm terminal config |
@@ -53,7 +54,7 @@ Cloned and kept up-to-date by chezmoi, not stored in this repo.
 | `~/.oh-my-zsh/custom/plugins/zsh-autosuggestions` | [zsh-users/zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) |
 | `~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting` | [zsh-users/zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) |
 | `~/.oh-my-zsh/custom/plugins/zsh-fzf-history-search` | [joshskidmore/zsh-fzf-history-search](https://github.com/joshskidmore/zsh-fzf-history-search) |
-| `~/.config/ranger/colorschemes/dracula` | [dracula/ranger](https://github.com/dracula/ranger) |
+| `~/.config/ranger/colorschemes/catppuccin` | [dfrico/catppuccin-ranger](https://github.com/dfrico/catppuccin-ranger) (shallow clone for upstream extras; `rc.conf` uses the committed `catppuccin_macchiato` colorscheme) |
 | `~/.config/ranger/plugins/zoxide` | [jchook/ranger-zoxide](https://github.com/jchook/ranger-zoxide) |
 | `~/.config/nvim` | your nvim config repo |
 
@@ -90,7 +91,7 @@ Age private key (AGE-SECRET-KEY-1..., leave empty to skip — encrypted files wi
 
 Install zsh + oh-my-zsh + p10k?            (default: true)
 Install shell tools (fzf / zoxide / bat / eza)?   (default: true)
-Install htop?                                     (default: true)
+Install top tools (htop + btop)?                 (default: true)
 Install mise (tool version manager)?              (default: true)
 Install tmux?                                     (default: true)
 Install lazygit?                                  (default: false)
@@ -106,7 +107,7 @@ Install karabiner-elements (macOS only)?          (default: false)
 - **Tools**: press Enter to accept the default; type `true` or `false` to override
 - Prerequisites (`curl`, `wget`, `gpg`, `age`, `git`, `git-delta`) are installed automatically before anything else
 - All tools are installed idempotently — already-installed tools are skipped
-- **RHEL/Rocky**: `epel-release` is installed automatically at the start of the run, making packages like `htop`, `ripgrep`, `fd-find`, `bat`, `fzf`, `zoxide`, `ranger`, and `age` available via `dnf`. If EPEL is unavailable, most tools fall back to a direct binary download; ranger prints a warning and is skipped.
+- **RHEL/Rocky**: `epel-release` is installed automatically at the start of the run, making packages like `htop`, `ripgrep`, `fd-find`, `bat`, `fzf`, `zoxide`, `ranger`, and `age` available via `dnf`. `btop` is installed from the repo when available, otherwise from GitHub releases. If EPEL is unavailable, most tools fall back to a direct binary download; ranger prints a warning and is skipped.
 
 ---
 
@@ -146,6 +147,7 @@ chezmoi add --encrypt ~/.some-secret-file       # encrypted
 
 ```bash
 # Edit your local chezmoi config and flip the flag to true
+# (e.g. installTopTools for htop + btop, installRanger for ranger)
 vim ~/.config/chezmoi/chezmoi.toml
 
 # Apply — chezmoi detects the install script content changed and re-runs it

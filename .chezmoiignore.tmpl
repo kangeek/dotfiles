@@ -1,35 +1,25 @@
+# ── Paths managed by .chezmoiexternal.toml ───────────────────────────────────
+# Targets listed in .chezmoiignore are not applied (including git-repo externals).
+# List those paths only under the matching "not installed" branches below — never
+# unconditionally, or the external will never populate ~.
+
 # macOS metadata (auto-generated, never commit)
 **/.DS_Store
-
-# uv installer auto-generated receipt (machine-specific)
-.config/uv/uv-receipt.json
 
 # Python bytecode cache (auto-generated, never commit)
 **/__pycache__
 **/*.pyc
 **/*.pyo
 
-# Karabiner auto-generated backups (not worth syncing)
-.config/karabiner/automatic_backups
-
 # chezmoi local config — machine-specific, NEVER commit (contains age private key)
 .config/chezmoi
 
-# ── Paths managed by .chezmoiexternal.toml ───────────────────────────────────
-# oh-my-zsh core + custom (managed externally)
-.oh-my-zsh
-
-# Ranger external plugins & themes
-.config/ranger/colorschemes/catppuccin
-.config/ranger/plugins/zoxide
-
-# Neovim config (separate repo)
-.config/nvim
-
 # ── Skip configs for tools the user chose not to install ─────────────────────
+
 {{ if not .installLazygit -}}
 .config/lazygit
 {{ end -}}
+
 {{ if not .installZsh -}}
 .config/zsh
 .oh-my-zsh
@@ -37,29 +27,43 @@
 .zshrc
 .zprofile
 {{ end -}}
+
 {{ if not .installMise -}}
 .config/mise
 {{ end -}}
+
 {{ if not .installTmux -}}
 .config/tmux
 {{ end -}}
+
 {{ if not .installShellTools -}}
 .config/bat
 .config/ranger
+.config/ranger/colorschemes/catppuccin
+.config/ranger/plugins/zoxide
 {{ end -}}
+
 {{ if not .installTopTools -}}
 .config/htop
 .config/btop
 {{ end -}}
+
 {{ if not .installNeovim -}}
 .config/nvim
 {{ end -}}
+
 {{ if not .installUv -}}
 .config/uv
 {{ end -}}
+# uv installer auto-generated receipt (machine-specific)
+.config/uv/uv-receipt.json
+
 {{ if not .installWezterm -}}
 .config/wezterm
 {{ end -}}
+
 {{ if not .installKarabiner -}}
 .config/karabiner
 {{ end -}}
+# Karabiner auto-generated backups (not worth syncing)
+.config/karabiner/automatic_backups
