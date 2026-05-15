@@ -114,7 +114,7 @@ Install karabiner-elements (macOS only)?          (default: false)
 
 ## Daily operations
 
-> The alias `df="chezmoi"` is defined in `.zshrc`, so `df` and `chezmoi` are interchangeable below.
+> The alias `ch="chezmoi"` is defined in `.zshrc`, so `ch` and `chezmoi` are interchangeable below.
 
 ### Edit a managed file
 
