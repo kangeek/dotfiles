@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+{{- if .installShellTools }}
+
+# Digest of managed ~/.config/bat files (changing any recomputes this comment → reruns bat cache).
+#{{- include "dot_config/bat/private_config" | sha256sum }}
+#{{- include "dot_config/bat/private_themes/private_Catppuccin Frappe.tmTheme" | sha256sum }}
+#{{- include "dot_config/bat/private_themes/private_Catppuccin Latte.tmTheme" | sha256sum }}
+#{{- include "dot_config/bat/private_themes/private_Catppuccin Macchiato.tmTheme" | sha256sum }}
+#{{- include "dot_config/bat/private_themes/private_Catppuccin Mocha.tmTheme" | sha256sum }}
+
+set -eu
+if command -v bat >/dev/null 2>&1; then
+  bat cache --build
+elif command -v batcat >/dev/null 2>&1; then
+  batcat cache --build
+fi
+
+{{- end }}

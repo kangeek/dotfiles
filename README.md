@@ -18,7 +18,7 @@ Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 | `~/.npmrc` | npm config |
 | `~/.bundle/config` | Bundler mirror config |
 | `~/.pip/pip.conf` | pip mirror config (legacy path) |
-| `~/.config/bat/` | bat syntax highlighter + Catppuccin themes |
+| `~/.config/bat/` | bat syntax highlighter + Catppuccin themes; `chezmoi apply` rebuilds caches via `run_onchange_bat-cache.sh.tmpl` when these files change |
 | `~/.config/htop/` | htop config |
 | `~/.config/btop/` | btop config + Catppuccin Macchiato theme (vim keybindings enabled) |
 | `~/.config/karabiner/` | Karabiner-Elements key remapping (macOS only) |
