@@ -78,6 +78,9 @@ export TZ='Asia/Shanghai'
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 #
+# Suppress the '%' marker zsh prints when a command's output lacks a trailing newline
+export PROMPT_EOL_MARK=''
+#
 if [[ -z "$WARP_HONOR_PS1" ]]; then
   # >>> oh-my-zsh plugins
   # vi-mode
