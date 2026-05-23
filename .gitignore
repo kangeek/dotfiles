@@ -54,3 +54,6 @@ dot_config/private_karabiner/private_automatic_backups/
 
 # chezmoi cache / run artifacts
 .chezmoi-*.json
+
+# oh-my-claudecode plugin runtime data
+.omc/
