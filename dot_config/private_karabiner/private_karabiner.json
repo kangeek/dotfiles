@@ -10,12 +10,15 @@
                 },
                 "rules": [
                     {
-                        "description": "[l⇧]⇪",
+                        "description": "[l⇧]⌃⌥␣",
                         "manipulators": [
                             {
                                 "from": { "key_code": "left_shift" },
                                 "to": { "key_code": "left_shift" },
-                                "to_if_alone": { "key_code": "caps_lock" },
+                                "to_if_alone": {
+                                    "key_code": "spacebar",
+                                    "modifiers": ["control", "option"]
+                                },
                                 "type": "basic"
                             }
                         ]
