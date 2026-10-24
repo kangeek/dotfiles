@@ -6,6 +6,9 @@ Host mac
 Host win
     HostName 192.168.88.123
     # HostName win.kang.zone
+ 
+Host wins
+    HostName 10.211.8.8
 
 Host lab
     HostName 36.139.170.12

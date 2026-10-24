@@ -7,6 +7,21 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "ssh_connections": [
+    {
+      "host": "10.211.8.8",
+      "username": "kang",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "C:\\Applications\\QMT\\Gateway\\.\\"
+          ]
+        }
+      ],
+      "nickname": "wins"
+    }
+  ],
   "agent_servers": {
     "codex-acp": {
       "default_config_options": {
@@ -15,6 +30,9 @@
       "type": "registry"
     },
     "claude-acp": {
+      "default_config_options": {
+        "mode": "default"
+      },
       "type": "registry"
     }
   },
