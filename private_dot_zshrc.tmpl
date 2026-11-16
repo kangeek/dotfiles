@@ -128,10 +128,10 @@ typeset -U path # deduplication
 #
 {{ if eq .chezmoi.os "darwin" -}}
 # >>> homebrew
-export HOMEBREW_CORE_GIT_REMOTE=https://mirrors.ustc.edu.cn/homebrew-core.git
-export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
-export HOMEBREW_CLEANUP_MAX_AGE_DAYS=0
-export BREW_HOME="/opt/homebrew"
+# export HOMEBREW_CORE_GIT_REMOTE=https://mirrors.ustc.edu.cn/homebrew-core.git
+# export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
+# export HOMEBREW_CLEANUP_MAX_AGE_DAYS=0
+# export BREW_HOME="/opt/homebrew"
 # <<< homebrew
 #
 # >>> PATH (GNU tools via brew, custom bins)
