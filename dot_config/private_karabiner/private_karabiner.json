@@ -10,18 +10,57 @@
                 },
                 "rules": [
                     {
-                        "description": "Space layer (built-in keyboard): tap=space, hold+key=symbols/arrows",
+                        "description": "Space layer (built-in keyboard): tap=space, tap then hold=repeat space, hold+key=symbols/arrows",
                         "manipulators": [
+                            {
+                                "type": "basic",
+                                "conditions": [
+                                    {
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
+                                        "type": "device_if"
+                                    },
+                                    {
+                                        "type": "variable_if",
+                                        "name": "space_tapped",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "spacebar",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "spacebar"
+                                    }
+                                ]
+                            },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     }
                                 ],
                                 "from": {
                                     "key_code": "spacebar",
-                                    "modifiers": { "optional": ["any"] }
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
                                 },
                                 "to": [
                                     {
@@ -39,13 +78,48 @@
                                         }
                                     }
                                 ],
-                                "to_if_alone": [{ "key_code": "spacebar" }],
-                                "type": "basic"
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "spacebar"
+                                    },
+                                    {
+                                        "set_variable": {
+                                            "name": "space_tapped",
+                                            "value": 1
+                                        }
+                                    }
+                                ],
+                                "type": "basic",
+                                "to_delayed_action": {
+                                    "to_if_invoked": [
+                                        {
+                                            "set_variable": {
+                                                "name": "space_tapped",
+                                                "value": 0
+                                            }
+                                        }
+                                    ],
+                                    "to_if_canceled": [
+                                        {
+                                            "set_variable": {
+                                                "name": "space_tapped",
+                                                "value": 0
+                                            }
+                                        }
+                                    ]
+                                },
+                                "parameters": {
+                                    "basic.to_delayed_action_delay_milliseconds": 400
+                                }
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -54,14 +128,24 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "v" },
-                                "to": [{ "key_code": "backslash" }],
+                                "from": {
+                                    "key_code": "v"
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "backslash"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -70,11 +154,15 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "a" },
+                                "from": {
+                                    "key_code": "a"
+                                },
                                 "to": [
                                     {
                                         "key_code": "equal_sign",
-                                        "modifiers": ["shift"]
+                                        "modifiers": [
+                                            "shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -82,7 +170,11 @@
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -91,14 +183,24 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "s" },
-                                "to": [{ "key_code": "hyphen" }],
+                                "from": {
+                                    "key_code": "s"
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "hyphen"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -107,11 +209,15 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "x" },
+                                "from": {
+                                    "key_code": "x"
+                                },
                                 "to": [
                                     {
                                         "key_code": "hyphen",
-                                        "modifiers": ["shift"]
+                                        "modifiers": [
+                                            "shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -119,7 +225,11 @@
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -128,14 +238,24 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "d" },
-                                "to": [{ "key_code": "equal_sign" }],
+                                "from": {
+                                    "key_code": "d"
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "equal_sign"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -144,14 +264,24 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "f" },
-                                "to": [{ "key_code": "open_bracket" }],
+                                "from": {
+                                    "key_code": "f"
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "open_bracket"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -160,14 +290,24 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "g" },
-                                "to": [{ "key_code": "close_bracket" }],
+                                "from": {
+                                    "key_code": "g"
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "close_bracket"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -176,11 +316,15 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "r" },
+                                "from": {
+                                    "key_code": "r"
+                                },
                                 "to": [
                                     {
                                         "key_code": "open_bracket",
-                                        "modifiers": ["shift"]
+                                        "modifiers": [
+                                            "shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -188,7 +332,11 @@
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -197,11 +345,15 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "t" },
+                                "from": {
+                                    "key_code": "t"
+                                },
                                 "to": [
                                     {
                                         "key_code": "close_bracket",
-                                        "modifiers": ["shift"]
+                                        "modifiers": [
+                                            "shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -209,7 +361,11 @@
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -218,14 +374,24 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "c" },
-                                "to": [{ "key_code": "grave_accent_and_tilde" }],
+                                "from": {
+                                    "key_code": "c"
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "grave_accent_and_tilde"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -234,11 +400,15 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "w" },
+                                "from": {
+                                    "key_code": "w"
+                                },
                                 "to": [
                                     {
                                         "key_code": "grave_accent_and_tilde",
-                                        "modifiers": ["shift"]
+                                        "modifiers": [
+                                            "shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -246,7 +416,11 @@
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -255,11 +429,15 @@
                                         "value": 1
                                     }
                                 ],
-                                "from": { "key_code": "u" },
+                                "from": {
+                                    "key_code": "u"
+                                },
                                 "to": [
                                     {
                                         "key_code": "backslash",
-                                        "modifiers": ["shift"]
+                                        "modifiers": [
+                                            "shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -267,7 +445,11 @@
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -278,15 +460,27 @@
                                 ],
                                 "from": {
                                     "key_code": "h",
-                                    "modifiers": { "optional": ["any"] }
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
                                 },
-                                "to": [{ "key_code": "left_arrow" }],
+                                "to": [
+                                    {
+                                        "key_code": "left_arrow"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -297,15 +491,27 @@
                                 ],
                                 "from": {
                                     "key_code": "j",
-                                    "modifiers": { "optional": ["any"] }
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
                                 },
-                                "to": [{ "key_code": "down_arrow" }],
+                                "to": [
+                                    {
+                                        "key_code": "down_arrow"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -316,15 +522,27 @@
                                 ],
                                 "from": {
                                     "key_code": "k",
-                                    "modifiers": { "optional": ["any"] }
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
                                 },
-                                "to": [{ "key_code": "up_arrow" }],
+                                "to": [
+                                    {
+                                        "key_code": "up_arrow"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "is_built_in_keyboard": true
+                                            }
+                                        ],
                                         "type": "device_if"
                                     },
                                     {
@@ -335,9 +553,17 @@
                                 ],
                                 "from": {
                                     "key_code": "l",
-                                    "modifiers": { "optional": ["any"] }
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
                                 },
-                                "to": [{ "key_code": "right_arrow" }],
+                                "to": [
+                                    {
+                                        "key_code": "right_arrow"
+                                    }
+                                ],
                                 "type": "basic"
                             }
                         ]
